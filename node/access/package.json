@@ -1,0 +1,12 @@
+{
+  "module": "./esm/mod.js",
+  "version": "0.0.1",
+  "name": "identifier",
+  "exports": {
+    ".": {
+      "import": "./esm/mod.js"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
