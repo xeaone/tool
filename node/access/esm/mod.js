@@ -3,8 +3,8 @@ export default class Access {
     #actions = [];
     #resources = [];
     constructor(options) {
-        this.#actions = options.actions ?? this.#actions;
-        this.#resources = options.resources ?? this.#resources;
+        this.#actions = options?.actions ?? this.#actions;
+        this.#resources = options?.resources ?? this.#resources;
     }
     actions(actions) {
         this.#actions = actions;

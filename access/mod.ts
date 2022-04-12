@@ -22,8 +22,8 @@ export default class Access {
     #resources: Array<string> = [];
 
     constructor (options: Options) {
-        this.#actions = options.actions ?? this.#actions;
-        this.#resources = options.resources ?? this.#resources;
+        this.#actions = options?.actions ?? this.#actions;
+        this.#resources = options?.resources ?? this.#resources;
     }
 
     actions (actions: Array<string>) {
