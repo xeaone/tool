@@ -1,7 +1,7 @@
 {
   "module": "./esm/mod.js",
   "version": "0.0.1",
-  "name": "identifier",
+  "name": "access",
   "exports": {
     ".": {
       "import": "./esm/mod.js"

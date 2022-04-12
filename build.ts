@@ -9,7 +9,7 @@ await build({
     shims: {},
     package: {
         version: '0.0.1',
-        name: 'identifier'
+        name: 'access'
     },
     test: false,
     typeCheck: false,
