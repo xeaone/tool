@@ -1,6 +1,3 @@
-/*
-    version: 0.0.1
-*/
 
 type BeforePost = (data: any, url: URL) => void;
 type AfterPost = (data: any, url: URL, code: number) => void;

@@ -1,5 +1,8 @@
 /*
-    version: 0.0.1
+    license: MIT
+    version: 0.0.2
+    author: Alexander Elias
+    repository: https://github.com/xeaone/tool
 */
 export default class Post {
     beforePost;
