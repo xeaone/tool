@@ -18,7 +18,7 @@ type Options = {
 
 export default class Access {
 
-    #actions: Array<string> = [];
+    #actions: Array<string> = []
     #resources: Array<string> = [];
 
     constructor (options?: Options) {

@@ -1,4 +1,5 @@
-import { build, emptyDir } from "https://deno.land/x/dnt/mod.ts";
+import { build, emptyDir } from 'https://deno.land/x/dnt/mod.ts';
+import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
 await emptyDir('./node');
 
@@ -54,16 +55,26 @@ await build({
     skipSourceOutput: true,
 });
 
-// import { transform as PackageShim } from 'https://deno.land/x/dnt/transform.ts';
-
-// const output = await transform({
-//     target: 'Latest',
-//     entryPoints: [ './identifier/mod.ts' ],
-//     shims: [
-//         {} as PackageShim
-//     ],
-//     // testShims: [],
-//     // mappings: {}, // optional specifier mappings
+// await build({
+//     package: { version: '0.0.1', name: 'post' },
+//     compilerOptions: { target: 'Latest' },
+//     entryPoints: [ './post/mod.ts' ],
+//     outDir: './temp/post',
+//     shims: {},
+//     test: false,
+//     typeCheck: false,
+//     declaration: false,
+//     scriptModule: false,
+//     skipSourceOutput: true,
 // });
 
-// console.log(output.main.files[ 0 ].fileText);
+// Deno.copyFileSync('./temp/post/esm/mod.js', './post/mod.js');
+// Deno.removeSync('./temp', { recursive: true });
+
+Deno.writeTextFileSync('./post/mod.js',
+    ts.transpile(
+        Deno.readTextFileSync('./post/mod.ts'),
+        { target: ts.ScriptTarget.Latest }
+    )
+);
+
