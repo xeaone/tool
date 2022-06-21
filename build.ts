@@ -1,7 +1,7 @@
 import { build, emptyDir } from 'https://deno.land/x/dnt/mod.ts';
 import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
-const version = '0.0.2';
+const version = '0.0.3';
 
 const header = `
 /*
@@ -9,6 +9,7 @@ const header = `
     version: ${version}
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
+    jsdelivr: https://cdn.jsdelivr.net/gh/xeaone/tool@main/
 */
 `;
 
@@ -41,7 +42,20 @@ await build({
 });
 
 await build({
-    package: { version, name: 'identifier' },
+    package: { version, name: 'jwt' },
+    compilerOptions: { target: 'Latest' },
+    entryPoints: [ './jwt/mod.ts' ],
+    outDir: './node/jwt',
+    shims: {},
+    test: false,
+    typeCheck: false,
+    declaration: false,
+    scriptModule: false,
+    skipSourceOutput: true,
+});
+
+await build({
+    package: { version, name: 'password' },
     compilerOptions: { target: 'Latest' },
     entryPoints: [ './password/mod.ts' ],
     outDir: './node/password',

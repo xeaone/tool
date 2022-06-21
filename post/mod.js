@@ -1,8 +1,9 @@
 /*
     license: MIT
-    version: 0.0.2
+    version: 0.0.3
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
+    jsdelivr: https://cdn.jsdelivr.net/gh/xeaone/tool@main/
 */
 export default class Post {
     beforePost;
