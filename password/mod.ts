@@ -23,10 +23,8 @@ const stringToBuffer = function (data: string): ArrayBuffer {
     return Uint8Array.from(data, x => x.charCodeAt(0)).buffer;
 };
 
-// if (typeof hex !== 'string') throw new TypeError('expected input to be a string');
-// if ((hex.length % 2) !== 0) throw new RangeError('expected string to be an even number of characters');
 const hexToBuffer = function (data: string): ArrayBuffer {
-    return Uint8Array.from((data.match(/.{2}/gi) || []).map(x => parseInt(x, 16))).buffer;
+    return Uint8Array.from(data.match(/.{2}/gi) || [], x => parseInt(x, 16)).buffer;
 };
 
 const pbkdf2 = async function (password: ArrayBuffer, salt: ArrayBuffer, iterations: number, size: number, hash: string) {
