@@ -1,2 +1,1 @@
-# XTool
-Coming Soon.
+# X-Tool
