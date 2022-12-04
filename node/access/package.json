@@ -1,6 +1,6 @@
 {
   "module": "./esm/mod.js",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "name": "access",
   "exports": {
     ".": {

@@ -1,7 +1,7 @@
 import { build, emptyDir } from 'https://deno.land/x/dnt/mod.ts';
 import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
-const version = '0.0.4';
+const version = '0.0.7';
 
 const header = `
 /*
