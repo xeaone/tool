@@ -3,8 +3,8 @@ const encoder = new TextEncoder();
 const stringToHash = function (text) {
     return dntShim.crypto.subtle.digest('SHA-256', encoder.encode(text));
 };
-const bufferToString = function (buffer) {
-    return Array.from(new Uint8Array(buffer)).map(x => x.toString(16).padStart(2, '0')).join('');
+const bufferToString = function (data) {
+    return Array.from(new Uint8Array(data), x => x.toString(16).padStart(2, '0')).join('');
 };
 export async function UsernameCreate(text) {
     return bufferToString(await stringToHash(text));
