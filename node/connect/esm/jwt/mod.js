@@ -1,5 +1,5 @@
-import * as base64url from './deps/deno.land/std@0.180.0/encoding/base64url.js';
-import * as base64 from './deps/deno.land/std@0.180.0/encoding/base64.js';
+import * as base64url from '../deps/deno.land/std@0.180.0/encoding/base64url.js';
+import * as base64 from '../deps/deno.land/std@0.180.0/encoding/base64.js';
 const encoder = new TextEncoder();
 export default async function (header, payload, secret) {
     const encodedHeader = base64url.encode(JSON.stringify(header));

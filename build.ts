@@ -1,7 +1,7 @@
 import { build, emptyDir } from 'https://deno.land/x/dnt/mod.ts';
 import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
-const version = '0.0.7';
+const version = '0.0.8';
 
 const header = `
 /*
@@ -18,8 +18,21 @@ await emptyDir('./node');
 await build({
     package: { version, name: 'access' },
     compilerOptions: { target: 'Latest' },
-    entryPoints: [ './access/mod.ts' ],
+    entryPoints: ['./access/mod.ts'],
     outDir: './node/access',
+    shims: {},
+    test: false,
+    typeCheck: false,
+    declaration: false,
+    scriptModule: false,
+    skipSourceOutput: true,
+});
+
+await build({
+    package: { version, name: 'connect' },
+    compilerOptions: { target: 'Latest' },
+    entryPoints: ['./connect/mod.ts'],
+    outDir: './node/connect',
     shims: {},
     test: false,
     typeCheck: false,
@@ -31,7 +44,7 @@ await build({
 await build({
     package: { version, name: 'identifier' },
     compilerOptions: { target: 'Latest' },
-    entryPoints: [ './identifier/mod.ts' ],
+    entryPoints: ['./identifier/mod.ts'],
     outDir: './node/identifier',
     shims: { crypto: true },
     test: false,
@@ -44,7 +57,7 @@ await build({
 await build({
     package: { version, name: 'jwt' },
     compilerOptions: { target: 'Latest' },
-    entryPoints: [ './jwt/mod.ts' ],
+    entryPoints: ['./jwt/mod.ts'],
     outDir: './node/jwt',
     shims: {},
     test: false,
@@ -57,7 +70,7 @@ await build({
 await build({
     package: { version, name: 'password' },
     compilerOptions: { target: 'Latest' },
-    entryPoints: [ './password/mod.ts' ],
+    entryPoints: ['./password/mod.ts'],
     outDir: './node/password',
     shims: { crypto: true },
     test: false,
@@ -70,7 +83,7 @@ await build({
 await build({
     package: { version, name: 'username' },
     compilerOptions: { target: 'Latest' },
-    entryPoints: [ './username/mod.ts' ],
+    entryPoints: ['./username/mod.ts'],
     outDir: './node/username',
     shims: { crypto: true },
     test: false,
