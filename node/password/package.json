@@ -1,14 +1,12 @@
 {
   "module": "./esm/mod.js",
-  "version": "0.0.8",
+  "version": "1.0.1",
   "name": "password",
   "exports": {
     ".": {
       "import": "./esm/mod.js"
     }
   },
-  "dependencies": {
-    "@deno/shim-crypto": "~0.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }

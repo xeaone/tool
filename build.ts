@@ -1,13 +1,13 @@
-import { build, emptyDir } from 'https://deno.land/x/dnt/mod.ts';
+import { build, emptyDir } from 'https://deno.land/x/dnt@0.22.0/mod.ts';
 import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
-const version = '0.0.8';
+import pkg from './package.json' assert { type: 'json' };
 
 const header = `
 /*
-    license: MIT
-    version: ${version}
-    author: Alexander Elias
+    license: ${pkg.license}
+    version: ${pkg.version}
+    author: ${pkg.author}
     repository: https://github.com/xeaone/tool
     jsdelivr: https://cdn.jsdelivr.net/gh/xeaone/tool@main/
 */
@@ -15,83 +15,32 @@ const header = `
 
 await emptyDir('./node');
 
-await build({
-    package: { version, name: 'access' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./access/mod.ts'],
-    outDir: './node/access',
-    shims: {},
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
-
-await build({
-    package: { version, name: 'connect' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./connect/mod.ts'],
-    outDir: './node/connect',
-    shims: {},
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
-
-await build({
-    package: { version, name: 'identifier' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./identifier/mod.ts'],
-    outDir: './node/identifier',
-    shims: { crypto: true },
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
-
-await build({
-    package: { version, name: 'jwt' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./jwt/mod.ts'],
-    outDir: './node/jwt',
-    shims: {},
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
-
-await build({
-    package: { version, name: 'password' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./password/mod.ts'],
-    outDir: './node/password',
-    shims: { crypto: true },
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
-
-await build({
-    package: { version, name: 'username' },
-    compilerOptions: { target: 'Latest' },
-    entryPoints: ['./username/mod.ts'],
-    outDir: './node/username',
-    shims: { crypto: true },
-    test: false,
-    typeCheck: false,
-    declaration: false,
-    scriptModule: false,
-    skipSourceOutput: true,
-});
+await Promise.all([
+    'access',
+    'connect',
+    'decrypt',
+    'encrypt',
+    'hash',
+    'identifier',
+    'jwt',
+    'password',
+    // 'post',
+    'username',
+    'secret',
+].map(name => {
+    return build({
+        package: { version: pkg.version, name },
+        compilerOptions: { target: 'Latest' },
+        entryPoints: [`./${name}/mod.ts`],
+        outDir: `./node/${name}`,
+        shims: {},
+        test: false,
+        typeCheck: false,
+        declaration: false,
+        scriptModule: false,
+        skipSourceOutput: true,
+    });
+}));
 
 // await build({
 //     package: { version, name: 'post' },
@@ -115,4 +64,3 @@ Deno.writeTextFileSync('./post/mod.js',
         { target: ts.ScriptTarget.Latest }
     )
 );
-

@@ -1,7 +1,5 @@
-import * as dntShim from "./_dnt.shims.js";
-const encoder = new TextEncoder();
-const stringToHash = function (text) {
-    return dntShim.crypto.subtle.digest('SHA-256', encoder.encode(text));
+const stringToHash = function (data) {
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
 };
 const bufferToString = function (data) {
     return Array.from(new Uint8Array(data), x => x.toString(16).padStart(2, '0')).join('');

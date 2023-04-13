@@ -1,10 +1,10 @@
-import * as dntShim from "./_dnt.shims.js";
-const SALT = 16;
-const SIZE = 20;
-const HASH = 'SHA-512';
-const ITERATIONS = 999999;
+/*
+https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf
+"5.1 The Salt (S)" At least 16 bytes
+"5.2 The Iteration Count (C)" Minimum 1,000
+*/
 const randomBytes = function (size) {
-    return dntShim.crypto.getRandomValues(new Uint8Array(size)).buffer;
+    return crypto.getRandomValues(new Uint8Array(size)).buffer;
 };
 const bufferToHex = function (data) {
     return Array.from(new Uint8Array(data), x => x.toString(16).padStart(2, '0')).join('');
@@ -13,45 +13,31 @@ const stringToBuffer = function (data) {
     return Uint8Array.from(data, x => x.charCodeAt(0)).buffer;
 };
 const hexToBuffer = function (data) {
-    return Uint8Array.from(data.match(/.{2}/gi) || [], x => parseInt(x, 16)).buffer;
+    return Uint8Array.from(data.match(/.{2}/g) || [], x => parseInt(x, 16)).buffer;
 };
-const pbkdf2 = async function (password, salt, iterations, size, hash) {
-    const key = await dntShim.dntGlobalThis.crypto.subtle.importKey('raw', password, {
-        name: 'PBKDF2'
-    }, false, ['deriveBits']);
-    const bits = await dntShim.dntGlobalThis.crypto.subtle.deriveBits({
-        salt,
-        iterations,
-        name: 'PBKDF2',
-        hash: { name: hash }
-    }, key, size << 3);
-    return new Uint8Array(bits);
+export const PasswordCreate = async function (secret, options) {
+    if (!secret)
+        throw new Error('secret required');
+    const length = options?.length || 256;
+    const hash = options?.hash || 'SHA-256';
+    const seperator = options?.seperator || '.';
+    const iterations = options?.iterations || 100_000;
+    const salt = typeof options?.salt === 'string' ? stringToBuffer(options.salt) :
+        typeof options?.salt === 'number' ? randomBytes(options.salt) :
+            options?.salt instanceof ArrayBuffer ? options.salt :
+                randomBytes(32);
+    const imported = await crypto.subtle.importKey('raw', stringToBuffer(secret), { name: 'PBKDF2' }, false, ['deriveBits']);
+    const derived = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash, salt, iterations }, imported, length);
+    return [bufferToHex(derived), bufferToHex(salt)].join(seperator);
 };
-export const PasswordCreate = async function (data, options) {
+export const PasswordCompare = async function (secret, data, options) {
     if (!data)
         throw new Error('data argument required');
-    const size = options?.size ?? SIZE;
-    const hash = options?.hash ?? HASH;
-    const salt = options?.salt ?? SALT;
-    const iterations = options?.iterations ?? ITERATIONS;
-    const bData = typeof data === 'string' ?
-        stringToBuffer(data) : data;
-    const bSalt = typeof salt === 'string' ?
-        stringToBuffer(salt) :
-        typeof salt === 'number' ?
-            randomBytes(salt) : salt;
-    const bKey = await pbkdf2(bData, bSalt, iterations, size, hash);
-    const hKey = bufferToHex(bKey);
-    const hSalt = bufferToHex(bSalt);
-    return `${hKey}:${hSalt}`;
-};
-export const PasswordCompare = async function (password, data, options) {
-    if (!data)
-        throw new Error('data argument required');
-    if (!password)
+    if (!secret)
         throw new Error('password argument required');
-    const salt = await hexToBuffer(data.split(':')[1]);
-    const computed = await PasswordCreate(password, { salt, ...options });
+    const seperator = options?.seperator || '.';
+    const salt = await hexToBuffer(data.split(seperator)[1]);
+    const computed = await PasswordCreate(secret, { salt, ...options });
     return data === computed;
 };
 export default { create: PasswordCreate, compare: PasswordCompare };
