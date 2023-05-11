@@ -1,7 +1,7 @@
 {
   "module": "./esm/connect/mod.js",
   "version": "1.1.0",
-  "name": "connect",
+  "name": "@xeaone/tool/connect",
   "exports": {
     ".": {
       "import": "./esm/connect/mod.js"

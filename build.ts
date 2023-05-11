@@ -29,7 +29,7 @@ await Promise.all([
     'secret',
 ].map(name => {
     return build({
-        package: { version: pkg.version, name },
+        package: { version: pkg.version, name: `${pkg.name}/${name}` },
         compilerOptions: { target: 'Latest' },
         entryPoints: [`./${name}/mod.ts`],
         outDir: `./node/${name}`,

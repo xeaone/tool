@@ -1,6 +1,7 @@
 {
-  "name": "tool",
-  "version": "1.1.0",
+  "private": false,
+  "name": "@xeaone/tool",
+  "version": "1.1.1",
   "description": "",
   "type": "module",
   "main": "index.js",
