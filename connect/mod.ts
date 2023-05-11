@@ -18,8 +18,6 @@ type Options = {
     project?: string;
 };
 
-type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-
 export class Google {
 
     key?: Key;
@@ -47,21 +45,33 @@ export class Google {
             const scope = 'https://www.googleapis.com/auth/cloud-platform';
             const assertion = await jwt({ typ: 'JWT', alg: 'RS256', }, { exp, iat, iss, aud, scope }, this.key.private_key);
 
-            response = await fetch('https://oauth2.googleapis.com/token', {
-                method: 'POST',
-                body: [
-                    `assertion=${encodeURIComponent(assertion)}`,
-                    `grant_type=${encodeURIComponent('urn:ietf:params:oauth:grant-type:jwt-bearer')}`
-                ].join('&'),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            const method = 'POST';
+
+            const body = new URLSearchParams({
+                'assertion': assertion,
+                'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             });
+
+            const headers = new Headers({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+
+            response = await fetch(
+                'https://oauth2.googleapis.com/token',
+                { method, body, headers }
+            );
 
         } else {
+            const method = 'GET';
 
-            response = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token', {
-                method: 'GET',
-                headers: { 'Metadata-Flavor': 'Google' }
+            const headers = new Headers({
+                'Metadata-Flavor': 'Google'
             });
+
+            response = await fetch(
+                'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
+                { method, headers }
+            );
 
         }
 
@@ -75,13 +85,19 @@ export class Google {
         this.#expires = Date.now() + (result.expires_in * 1000);
     }
 
-    async fetch(method: Method, url: string, body?: any) {
+    async fetch(input: string | URL | Request, init?: RequestInit) {
 
         if (!this.project) {
-            const projectResponse = await fetch('http://metadata.google.internal/computeMetadata/v1/project/project-id', {
-                method: 'GET',
-                headers: { 'Metadata-Flavor': 'Google' }
+            const method = 'GET';
+            const headers = new Headers({
+                'Metadata-Flavor': 'Google'
             });
+
+            const projectResponse = await fetch(
+                'http://metadata.google.internal/computeMetadata/v1/project/project-id',
+                { method, headers }
+            );
+
             this.project = await projectResponse.text();
         }
 
@@ -89,23 +105,11 @@ export class Google {
 
         await this.#auth();
 
-        const headers = new Headers();
+        const request = new Request(input, init);
 
-        if (this.#token) headers.set('Authorization', `Bearer ${this.#token}`);
+        if (this.#token) request.headers.set('Authorization', `Bearer ${this.#token}`);
 
-        headers.set('Accept', 'application/json');
-        headers.set('Content-Type', 'application/json');
-
-        const request: RequestInit = { method, headers };
-
-        let params = '';
-        if (method === 'GET') {
-            params = `?${new URLSearchParams(body).toString()}`;
-        } else {
-            request.body = body ? JSON.stringify(body) : undefined;
-        }
-
-        const response = await fetch(`${url}${params}`, request);
+        const response = await fetch(request);
 
         return response;
     }

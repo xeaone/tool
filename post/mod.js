@@ -1,6 +1,6 @@
 /*
     license: MIT
-    version: 1.0.1
+    version: 1.1.0
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
     jsdelivr: https://cdn.jsdelivr.net/gh/xeaone/tool@main/
