@@ -1,7 +1,7 @@
 [![deno module](https://shield.deno.dev/x/xtool)](https://deno.land/x/xtool)
 ![deno compatibility](https://shield.deno.dev/deno/1.33.3)
 ![GitHub](https://img.shields.io/github/license/xeaone/tool)
-[![CodeQL](https://github.com/xeaone/tool/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/xeaone/tool/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/xeaone/tool/actions/workflows/codeql.yml/badge.svg)](https://github.com/xeaone/tool/actions/workflows/codeql.yml)
 [![Test](https://github.com/xeaone/tool/actions/workflows/test.yml/badge.svg)](https://github.com/xeaone/tool/actions/workflows/test.yml)
 
 # X-Tool
