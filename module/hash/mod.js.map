@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../hash/mod.ts"],
+  "sourcesContent": ["/**\n * @description Hash a string and return hex encoded string.\n * @param {string} data\n * @returns {Promise<string>}\n */\nexport default async function hash(data: string): Promise<string> {\n    const encoded = new TextEncoder().encode(data);\n    const buffer = await crypto.subtle.digest('SHA-256', encoded);\n    return Array.from(new Uint8Array(buffer)).map((x) => x.toString(16).padStart(2, '0')).join('');\n}\n"],
+  "mappings": ";;;;;;;;;;AAKA,eAAO,KAA4B,MAA+B;AAC9D,QAAM,UAAU,IAAI,YAAY,EAAE,OAAO,IAAI;AAC7C,QAAM,SAAS,MAAM,OAAO,OAAO,OAAO,WAAW,OAAO;AAC5D,SAAO,MAAM,KAAK,IAAI,WAAW,MAAM,CAAC,EAAE,IAAI,CAAC,MAAM,EAAE,SAAS,EAAE,EAAE,SAAS,GAAG,GAAG,CAAC,EAAE,KAAK,EAAE;AACjG;",
+  "names": []
+}

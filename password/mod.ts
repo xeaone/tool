@@ -5,11 +5,11 @@ https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-132.pdf
 */
 
 type Options = {
-    length?: number,
-    hash?: string,
-    iterations?: number,
-    salt?: string | number | ArrayBuffer,
-    seperator?: string,
+    length?: number;
+    hash?: string;
+    iterations?: number;
+    salt?: string | number | ArrayBuffer;
+    seperator?: string;
 };
 
 const randomBytes = function (size: number): ArrayBuffer {
@@ -17,18 +17,25 @@ const randomBytes = function (size: number): ArrayBuffer {
 };
 
 const bufferToHex = function (data: ArrayBuffer): string {
-    return Array.from(new Uint8Array(data), x => x.toString(16).padStart(2, '0')).join('');
+    return Array.from(
+        new Uint8Array(data),
+        (x) => x.toString(16).padStart(2, '0'),
+    ).join('');
 };
 
 const stringToBuffer = function (data: string): ArrayBuffer {
-    return Uint8Array.from(data, x => x.charCodeAt(0)).buffer;
+    return Uint8Array.from(data, (x) => x.charCodeAt(0)).buffer;
 };
 
 const hexToBuffer = function (data: string): ArrayBuffer {
-    return Uint8Array.from(data.match(/.{2}/g) || [], x => parseInt(x, 16)).buffer;
+    return Uint8Array.from(data.match(/.{2}/g) || [], (x) => parseInt(x, 16))
+        .buffer;
 };
 
-export const PasswordCreate = async function (secret: string, options?: Options): Promise<string> {
+export const PasswordCreate = async function (
+    secret: string,
+    options?: Options,
+): Promise<string> {
     if (!secret) throw new Error('secret required');
 
     const length = options?.length || 256;
@@ -36,30 +43,30 @@ export const PasswordCreate = async function (secret: string, options?: Options)
     const seperator = options?.seperator || '.';
     const iterations = options?.iterations || 100_000;
 
-    const salt =
-        typeof options?.salt === 'string' ? stringToBuffer(options.salt) :
-            typeof options?.salt === 'number' ? randomBytes(options.salt) :
-                options?.salt instanceof ArrayBuffer ? options.salt :
-                    randomBytes(32);
+    const salt = typeof options?.salt === 'string' ? stringToBuffer(options.salt) : typeof options?.salt === 'number' ? randomBytes(options.salt) : options?.salt instanceof ArrayBuffer ? options.salt : randomBytes(32);
 
     const imported = await crypto.subtle.importKey(
         'raw',
         stringToBuffer(secret),
         { name: 'PBKDF2' },
         false,
-        ['deriveBits']
+        ['deriveBits'],
     );
 
     const derived = await crypto.subtle.deriveBits(
         { name: 'PBKDF2', hash, salt, iterations },
         imported,
-        length
+        length,
     );
 
     return [bufferToHex(derived), bufferToHex(salt)].join(seperator);
 };
 
-export const PasswordCompare = async function (secret: string, data: string, options?: Options): Promise<boolean> {
+export const PasswordCompare = async function (
+    secret: string,
+    data: string,
+    options?: Options,
+): Promise<boolean> {
     if (!data) throw new Error('data argument required');
     if (!secret) throw new Error('password argument required');
 
@@ -70,4 +77,7 @@ export const PasswordCompare = async function (secret: string, data: string, opt
     return data === computed;
 };
 
-export default { create: PasswordCreate, compare: PasswordCompare } as const;
+export default {
+    create: PasswordCreate,
+    compare: PasswordCompare,
+} as const;

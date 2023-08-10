@@ -1,6 +1,28 @@
 {
     "tasks": {
-        "test": "deno run test",
-        "build": "deno run -A build.ts"
+        "t": "deno run -A test.ts",
+        "b": "deno fmt && deno test && deno run -A build.ts"
+    },
+    "lint": {
+        "exclude": [
+            "_",
+            ".github",
+            ".vscode",
+            "module"
+        ]
+    },
+    "fmt": {
+        "useTabs": false,
+        "lineWidth": 800,
+        "indentWidth": 4,
+        "semiColons": true,
+        "singleQuote": true,
+        "proseWrap": "preserve",
+        "exclude": [
+            "_",
+            ".github",
+            ".vscode",
+            "module"
+        ]
     }
 }

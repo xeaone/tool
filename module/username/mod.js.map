@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../username/mod.ts"],
+  "sourcesContent": ["const stringToHash = function (data: string): Promise<ArrayBuffer> {\n    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));\n};\n\nconst bufferToString = function (data: ArrayBuffer): string {\n    return Array.from(\n        new Uint8Array(data),\n        (x) => x.toString(16).padStart(2, '0'),\n    ).join('');\n};\n\nexport async function UsernameCreate(text: string): Promise<string> {\n    return bufferToString(await stringToHash(text));\n}\n\nexport async function UsernameCompare(\n    text: string,\n    hash: string,\n): Promise<boolean> {\n    return bufferToString(await stringToHash(text)) === hash;\n}\n\nexport default {\n    create: UsernameCreate,\n    compare: UsernameCompare,\n} as const;\n"],
+  "mappings": ";;;;;;;;;;AAAA,IAAM,eAAe,SAAU,MAAoC;AAC/D,SAAO,OAAO,OAAO,OAAO,WAAW,IAAI,YAAY,EAAE,OAAO,IAAI,CAAC;AACzE;AAEA,IAAM,iBAAiB,SAAU,MAA2B;AACxD,SAAO,MAAM;AAAA,IACT,IAAI,WAAW,IAAI;AAAA,IACnB,CAAC,MAAM,EAAE,SAAS,EAAE,EAAE,SAAS,GAAG,GAAG;AAAA,EACzC,EAAE,KAAK,EAAE;AACb;AAEA,eAAsB,eAAe,MAA+B;AAChE,SAAO,eAAe,MAAM,aAAa,IAAI,CAAC;AAClD;AAEA,eAAsB,gBAClB,MACA,MACgB;AAChB,SAAO,eAAe,MAAM,aAAa,IAAI,CAAC,MAAM;AACxD;AAEA,IAAO,cAAQ;AAAA,EACX,QAAQ;AAAA,EACR,SAAS;AACb;",
+  "names": []
+}

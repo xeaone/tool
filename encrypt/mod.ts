@@ -1,10 +1,9 @@
-
 const randomBytes = function (size: number) {
     return crypto.getRandomValues(new Uint8Array(size)).buffer;
 };
 
 const bufferToHex = function (data: ArrayBufferLike) {
-    return Array.from(new Uint8Array(data)).map(x => x.toString(16).padStart(2, '0')).join('');
+    return Array.from(new Uint8Array(data)).map((x) => x.toString(16).padStart(2, '0')).join('');
 };
 
 const stringToBuffer = function (data: string) {
@@ -15,19 +14,18 @@ export default async function encrypt(
     data: string,
     secret: string,
     options?: {
-        tag?: number,
-        length?: number,
-        iterations?: number,
+        tag?: number;
+        length?: number;
+        iterations?: number;
 
-        hash?: string,
-        algorithm?: string,
-        seperator?: string,
+        hash?: string;
+        algorithm?: string;
+        seperator?: string;
 
         salt?: number;
-        vector?: number,
-    }
+        vector?: number;
+    },
 ): Promise<string> {
-
     if (!data) throw new Error(' data required');
     if (!secret) throw new Error('secret required');
 
@@ -47,7 +45,7 @@ export default async function encrypt(
         stringToBuffer(secret),
         { name: 'PBKDF2' },
         false,
-        ['deriveBits', 'deriveKey']
+        ['deriveBits', 'deriveKey'],
     );
 
     const derived = await crypto.subtle.deriveKey(
@@ -55,14 +53,15 @@ export default async function encrypt(
         imported,
         { name: algorithm, length },
         true,
-        ['encrypt']
+        ['encrypt'],
     );
 
     const encrypted = await crypto.subtle.encrypt(
         { iv: vector, name: algorithm, length, tagLength: tag },
         derived,
-        body
+        body,
     );
 
-    return [bufferToHex(encrypted), bufferToHex(salt), bufferToHex(vector)].join(seperator);
+    return [bufferToHex(encrypted), bufferToHex(salt), bufferToHex(vector)]
+        .join(seperator);
 }

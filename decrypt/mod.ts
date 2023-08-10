@@ -1,6 +1,6 @@
-
 const hexToBuffer = function (data: string) {
-    return Uint8Array.from(data.match(/.{2}/g) || [], x => parseInt(x, 16)).buffer;
+    return Uint8Array.from(data.match(/.{2}/g) || [], (x) => parseInt(x, 16))
+        .buffer;
 };
 
 const bufferToString = function (data: BufferSource) {
@@ -15,16 +15,15 @@ export default async function decrypt(
     data: string,
     secret: string,
     options?: {
-        tag?: number,
-        length?: number,
+        tag?: number;
+        length?: number;
         iterations?: number;
 
         hash?: string;
-        algorithm?: string,
-        seperator?: string,
-    }
+        algorithm?: string;
+        seperator?: string;
+    },
 ): Promise<string> {
-
     if (!data) throw new Error(' data required');
     if (!secret) throw new Error('secret required');
 
@@ -45,7 +44,7 @@ export default async function decrypt(
         stringToBuffer(secret),
         { name: 'PBKDF2' },
         false,
-        ['deriveBits', 'deriveKey']
+        ['deriveBits', 'deriveKey'],
     );
 
     const derived = await crypto.subtle.deriveKey(
@@ -53,13 +52,13 @@ export default async function decrypt(
         imported,
         { name: algorithm, length },
         true,
-        ['decrypt']
+        ['decrypt'],
     );
 
     const decrypted = await crypto.subtle.decrypt(
         { iv: vector, name: algorithm, length, tagLength: tag },
         derived,
-        body
+        body,
     );
 
     return bufferToString(decrypted);

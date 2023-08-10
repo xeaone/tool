@@ -1,29 +1,33 @@
 import jwt from '../jwt/mod.ts';
 
 // https://developers.google.com/identity/protocols/oauth2/service-account
-export type ServiceAccountCredentials = {
-    type: 'service_account',
-    project_id: string,
-    private_key_id: string,
-    private_key: string,
-    client_email: string,
-    client_id: string,
-    auth_uri?: string,
-    token_uri?: string,
-    client_x509_cert_url?: string,
-    auth_provider_x509_cert_url?: string,
+type ServiceAccountCredentials = {
+    type: 'service_account';
+    project_id: string;
+    private_key_id: string;
+    private_key: string;
+    client_email: string;
+    client_id: string;
+    auth_uri?: string;
+    token_uri?: string;
+    client_x509_cert_url?: string;
+    auth_provider_x509_cert_url?: string;
 };
 
 // https://developers.google.com/identity/protocols/oauth2/web-server#offline
-export type ApplicationDefaultCredentials = {
-    type: 'authorized_user',
-    client_id: string,
-    client_secret: string,
-    grant_type: string,
-    refresh_token: string,
-}
+type ApplicationDefaultCredentials = {
+    type: 'authorized_user';
+    client_id: string;
+    client_secret: string;
+    grant_type: string;
+    refresh_token: string;
+};
 
-type Credential = 'meta' | 'application' | ApplicationDefaultCredentials | ServiceAccountCredentials
+type Credential =
+    | 'meta'
+    | 'application'
+    | ApplicationDefaultCredentials
+    | ServiceAccountCredentials;
 
 type Options = {
     project?: string;
@@ -32,8 +36,7 @@ type Options = {
     applicationDefaultCredentials?: ApplicationDefaultCredentials;
 };
 
-export class Google {
-
+class Google {
     #token?: string;
     #expires?: number;
     #project?: string;
@@ -43,7 +46,8 @@ export class Google {
     constructor(options?: Options) {
         this.#project = options?.project;
         this.#serviceAccountCredentials = options?.serviceAccountCredentials;
-        this.#applicationDefaultCredentials = options?.applicationDefaultCredentials;
+        this.#applicationDefaultCredentials = options
+            ?.applicationDefaultCredentials;
     }
 
     async #auth() {
@@ -53,7 +57,7 @@ export class Google {
         if (this.#applicationDefaultCredentials) {
             response = await fetch('https://oauth2.googleapis.com/token', {
                 method: 'POST',
-                body: new URLSearchParams(this.#applicationDefaultCredentials)
+                body: new URLSearchParams(this.#applicationDefaultCredentials),
             });
         } else if (this.#serviceAccountCredentials) {
             const { client_email, private_key } = this.#serviceAccountCredentials;
@@ -62,7 +66,13 @@ export class Google {
             const exp = iat + (30 * 60);
             const aud = 'https://oauth2.googleapis.com/token';
             const scope = 'https://www.googleapis.com/auth/datastore';
-            const assertion = await jwt({ typ: 'JWT', alg: 'RS256' }, { exp, iat, iss, aud, scope }, private_key);
+            const assertion = await jwt({ typ: 'JWT', alg: 'RS256' }, {
+                exp,
+                iat,
+                iss,
+                aud,
+                scope,
+            }, private_key);
             const grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
             response = await fetch('https://oauth2.googleapis.com/token', {
                 method: 'POST',
@@ -70,10 +80,13 @@ export class Google {
             });
         } else {
             try {
-                response = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token', {
-                    method: 'GET',
-                    headers: { 'Metadata-Flavor': 'Google' },
-                });
+                response = await fetch(
+                    'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
+                    {
+                        method: 'GET',
+                        headers: { 'Metadata-Flavor': 'Google' },
+                    },
+                );
             } catch {
                 throw new Error('credentials required');
             }
@@ -89,8 +102,13 @@ export class Google {
         this.#expires = Date.now() + (result.expires_in * 1000);
     }
 
-    applicationDefault(applicationDefaultCredentials: ApplicationDefaultCredentials) {
-        this.#applicationDefaultCredentials = { ...applicationDefaultCredentials, grant_type: 'refresh_token' };
+    applicationDefault(
+        applicationDefaultCredentials: ApplicationDefaultCredentials,
+    ) {
+        this.#applicationDefaultCredentials = {
+            ...applicationDefaultCredentials,
+            grant_type: 'refresh_token',
+        };
         return this;
     }
 
@@ -124,15 +142,22 @@ export class Google {
 
             try {
                 const prefix = Deno.build.os === 'windows' ? Deno.env.get('APPDATA') : `${Deno.env.get('HOME')}/.config`;
-                file = Deno.readTextFileSync(`${prefix}/gcloud/application_default_credentials.json`);
+                file = Deno.readTextFileSync(
+                    `${prefix}/gcloud/application_default_credentials.json`,
+                );
             } catch {
                 return;
             }
 
             const data = JSON.parse(file);
-            this.#applicationDefaultCredentials = { ...data, grant_type: 'refresh_token' };
+            this.#applicationDefaultCredentials = {
+                ...data,
+                grant_type: 'refresh_token',
+            };
         } else if (credential.type === 'authorized_user') {
-            this.applicationDefault(credential as ApplicationDefaultCredentials);
+            this.applicationDefault(
+                credential as ApplicationDefaultCredentials,
+            );
         } else if (credential.type === 'service_account') {
             this.serviceAccount(credential as ServiceAccountCredentials);
         } else {
@@ -146,16 +171,15 @@ export class Google {
     }
 
     async fetch(input: string | URL | Request, init?: RequestInit) {
-
         if (!this.project) {
             const method = 'GET';
             const headers = new Headers({
-                'Metadata-Flavor': 'Google'
+                'Metadata-Flavor': 'Google',
             });
 
             const projectResponse = await fetch(
                 'http://metadata.google.internal/computeMetadata/v1/project/project-id',
-                { method, headers }
+                { method, headers },
             );
 
             this.#project = await projectResponse.text();
@@ -167,11 +191,16 @@ export class Google {
 
         const request = new Request(input, init);
 
-        if (this.#token) request.headers.set('Authorization', `Bearer ${this.#token}`);
+        if (this.#token) {
+            request.headers.set('Authorization', `Bearer ${this.#token}`);
+        }
 
         const response = await fetch(request);
 
         return response;
     }
-
 }
+
+export default {
+    Google,
+};
