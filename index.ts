@@ -1,4 +1,3 @@
-
 import access from './access/mod.ts';
 import connect from './connect/mod.ts';
 import decrypt from './decrypt/mod.ts';
@@ -13,14 +12,14 @@ import username from './username/mod.ts';
 
 export default {
     access,
-	connect,
-	decrypt,
-	encrypt,
-	hash,
-	identifier,
-	jwt,
-	password,
-	post,
-	secret,
-	username,
-}
+    connect,
+    decrypt,
+    encrypt,
+    hash,
+    identifier,
+    jwt,
+    password,
+    post,
+    secret,
+    username,
+};

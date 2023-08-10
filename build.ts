@@ -33,8 +33,7 @@ const banner = `
 
 await writeTextFile(
     'index.ts',
-    `
-${names.map((name) => `import ${name} from './${name}/mod.ts';`).join('\n')}
+    `${names.map((name) => `import ${name} from './${name}/mod.ts';`).join('\n')}
 
 export default {
     ${names.map((name) => `${name},`).join('\n\t')}
@@ -44,8 +43,7 @@ export default {
 
 await writeTextFile(
     'module/index.js',
-    `
-${names.map((name) => `import ${name} from './${name}/mod.js';`).join('\n')}
+    `${names.map((name) => `import ${name} from './${name}/mod.js';`).join('\n')}
 
 export default {
     ${names.map((name) => `${name},`).join('\n\t')}
