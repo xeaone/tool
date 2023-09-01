@@ -16,15 +16,12 @@ const releases = ['pre', 'major', 'premajor', 'minor', 'preminor', 'patch', 'pre
 const cmd = (cmd: string, args?: string[]) => new Deno.Command(cmd, { args }).spawn().output();
 
 const helpText = `
-    Version:
-        ${versionImport}
+    Version: ${versionImport}
+    DESCRIPTION: Increments verions.ts with SemVer and publish to npm, git tag, and git commit.
 
-    DESCRIPTION:
-        Increments verions.ts with SemVer and publish to npm, git tag, and git commit.
-
-    INSTALL/Uninstall:
-        deno install --allow-read --allow-write --name publish https://deno.land/x/xtool/executable/publish.ts
-        deno uninstall publish
+    UNINSTALL: deno uninstall publish
+    INSTALL: deno install --allow-read --allow-write --name publish https://deno.land/x/xtool/executable/publish.ts
+    UPGRADE: deno install --allow-read --allow-write --name publish https://deno.land/x/xtool/executable/publish.ts -f
 
     USAGE:
         publish [METHOD] [OPTIONS]
@@ -46,6 +43,8 @@ const helpText = `
         --git           Creates git commit with version (defatul is true)
         --tag           Creates git tag with version (defatul is true)
         --npm           Publishes npm version  (defatul is true)
+
+
 `;
 
 export const publish = async function () {
