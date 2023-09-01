@@ -10,6 +10,8 @@ import post from './post/mod.ts';
 import secret from './secret/mod.ts';
 import username from './username/mod.ts';
 
+import publish from './executable/publish.ts';
+
 export default {
     access,
     connect,
@@ -22,4 +24,5 @@ export default {
     post,
     secret,
     username,
+    publish,
 };
