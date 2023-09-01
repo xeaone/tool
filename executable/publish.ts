@@ -55,7 +55,7 @@ export const publish = async function () {
             tag: true,
             npm: true,
             help: false,
-        }
+        },
     });
 
     const [release] = options._ as string[];
@@ -71,16 +71,17 @@ export const publish = async function () {
         Deno.exit();
     }
 
-    const versionFile = await Deno.readTextFile(resolve('./version.ts')).catch(() => {
+    const versionPath = resolve('./version.ts');
+    const versionFile = await Deno.readTextFile(versionPath).catch(() => {
         console.error(red(`requires ./version.ts -> export default '3.0.1';`));
         Deno.exit();
     });
 
     const { major, minor, patch } = semver.increment(
         semver.parse(
-            versionFile.match(versionPattern)?.[2] ?? ''
+            versionFile.match(versionPattern)?.[2] ?? '',
         ),
-        release as semver.ReleaseType
+        release as semver.ReleaseType,
     );
 
     const version = `${major}.${minor}.${patch}`;
@@ -102,12 +103,14 @@ export const publish = async function () {
     }
 
     if (npm) {
-        const pkg = JSON.parse(await Deno.readTextFile(resolve('./package.json')));
-        pkg.version = version;
-        await Deno.writeTextFile(resolve('./package.json'), JSON.stringify(pkg, null, '\t'));
+        const pkgPath = resolve('./package.json');
+        const pkgOld = await Deno.readTextFile(pkgPath);
+        const pkgVersion = /("version":\s*")([0-9.]+)(")/;
+        const pkgNew = pkgOld.replace(pkgVersion, `$1${version}$3`);
+        await Deno.writeTextFile(pkgPath, pkgNew);
     }
 
-    await Deno.writeTextFile(resolve('./version.ts'), versionFile.replace(versionPattern, `$1${version}$3`));
+    await Deno.writeTextFile(versionPath, versionFile.replace(versionPattern, `$1${version}$3`));
 
     if (git) {
         await cmd('git', ['add', '.']);
@@ -122,11 +125,10 @@ export const publish = async function () {
 
     if (npm) {
         await cmd('npm', ['publish']);
-        // await cmd('npm', ['publish', '--access', 'public']);
     }
 
     console.log(blue(`Published version: ${version}`));
-}
+};
 
 export default publish;
 
