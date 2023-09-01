@@ -1,7 +1,7 @@
 {
     "private": false,
     "name": "@xeaone/tool",
-    "version": "3.2.4",
+    "version": "3.2.5",
     "description": "",
     "type": "module",
     "main": "./module/index.js",

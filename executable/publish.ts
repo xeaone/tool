@@ -4,6 +4,7 @@ import { resolve } from 'https://deno.land/std@0.201.0/path/resolve.ts';
 import { blue, red } from 'https://deno.land/std@0.201.0/fmt/colors.ts';
 import * as semver from 'https://deno.land/std@0.201.0/semver/mod.ts';
 import { parse } from 'https://deno.land/std@0.201.0/flags/mod.ts';
+import versionImport from '../version.ts';
 
 /**
  * Increments verions.ts with SemVer and publish to npm, git tag, and git commit.
@@ -15,11 +16,15 @@ const releases = ['pre', 'major', 'premajor', 'minor', 'preminor', 'patch', 'pre
 const cmd = (cmd: string, args?: string[]) => new Deno.Command(cmd, { args }).spawn().output();
 
 const helpText = `
+    Version:
+        ${versionImport}
+
     DESCRIPTION:
         Increments verions.ts with SemVer and publish to npm, git tag, and git commit.
 
-    INSTALL:
-        deno install --allow-read --allow-write https://deno.land/x/xtool/executable/publish.ts
+    INSTALL/Uninstall:
+        deno install --allow-read --allow-write --name publish https://deno.land/x/xtool/executable/publish.ts
+        deno uninstall publish
 
     USAGE:
         publish [METHOD] [OPTIONS]
@@ -36,6 +41,7 @@ const helpText = `
 
     OPTIONS:
         --help          Prints help information
+        --version       Prints version information
 
         --git           Creates git commit with version (defatul is true)
         --tag           Creates git tag with version (defatul is true)
@@ -49,19 +55,30 @@ export const publish = async function () {
             'tag',
             'npm',
             'help',
+            'version',
         ],
         default: {
             git: true,
             tag: true,
             npm: true,
             help: false,
+            version: false,
         },
     });
 
     const [release] = options._ as string[];
-    const { help, git, tag, npm } = options;
 
-    if (help || !release) {
+    if (!release) {
+        console.log(helpText);
+        Deno.exit();
+    }
+
+    if (options.version) {
+        console.log(`Publish Version: ${versionImport}`);
+        Deno.exit();
+    }
+
+    if (options.help) {
         console.log(helpText);
         Deno.exit();
     }
@@ -86,7 +103,7 @@ export const publish = async function () {
 
     const version = `${major}.${minor}.${patch}`;
 
-    if (tag) {
+    if (options.tag) {
         const r = await cmd('git', ['fetch']);
         if (!r.success) {
             console.error(red(`git auth required`));
@@ -94,7 +111,7 @@ export const publish = async function () {
         }
     }
 
-    if (npm) {
+    if (options.npm) {
         const r = await cmd('npm', ['whoami']);
         if (!r.success) {
             console.error(red(`npm auth required`));
@@ -102,7 +119,7 @@ export const publish = async function () {
         }
     }
 
-    if (npm) {
+    if (options.npm) {
         const pkgPath = resolve('./package.json');
         const pkgOld = await Deno.readTextFile(pkgPath);
         const pkgVersion = /("version":\s*")([0-9.]+)(")/;
@@ -112,18 +129,18 @@ export const publish = async function () {
 
     await Deno.writeTextFile(versionPath, versionFile.replace(versionPattern, `$1${version}$3`));
 
-    if (git) {
+    if (options.git) {
         await cmd('git', ['add', '.']);
         await cmd('git', ['commit', '-m', version]);
         await cmd('git', ['push']);
     }
 
-    if (tag) {
+    if (options.tag) {
         await cmd('git', ['tag', version]);
         await cmd('git', ['push', '--tag']);
     }
 
-    if (npm) {
+    if (options.npm) {
         await cmd('npm', ['publish']);
     }
 
