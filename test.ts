@@ -7,15 +7,16 @@ import { PasswordCompare, PasswordCreate } from './password/mod.ts';
 Deno.test('encrypt decrypt', async () => {
     const data = 'hello world';
     const secret = 'secret';
-    const result = await decrypt(await encrypt(data, secret), secret);
-    assertEquals(result, 'hello world');
+    const encrypted = await encrypt(data, secret);
+    const decrypted = await decrypt(encrypted, secret);
+    assertEquals(decrypted, 'hello world');
 });
 
 Deno.test('PasswordCreate and PasswordCompare', async () => {
     const secret = 'secret';
     const created = await PasswordCreate(secret);
     const compared = await PasswordCompare(secret, created);
-    console.log(created);
+    // console.log(created);
     assertEquals(compared, true);
 });
 

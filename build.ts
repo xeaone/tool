@@ -18,6 +18,7 @@ const names = [
     'jwt',
     'password',
     'post',
+    'random',
     'secret',
     'username',
 ];
@@ -59,13 +60,13 @@ await Promise.all(names.map((name) =>
         sourcemap: true,
         treeShaking: true,
         banner: { js: banner },
-        plugins: [http],
+        plugins: [ http ],
         format: 'esm',
         target: 'esnext',
         logLevel: 'verbose',
         // platform: 'browser',
         outdir: `module/${name}/`,
-        entryPoints: [`${name}/mod.ts`],
+        entryPoints: [ `${name}/mod.ts` ],
     })
 ));
 
