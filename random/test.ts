@@ -3,11 +3,11 @@ import { random } from './mod.ts';
 
 const uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const lowers = 'abcdefghijklmnopqrstuvwxyz';
-const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\]\\^_`{|}~';
+const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\]\\\\^_`{|}~';
 const numbers = '0123456789';
 
 const pattern = (
-    { length = 8, upper = true, lower = true, symbol = true, number = true }: { length?: number; upper?: boolean; lower?: boolean; symbol?: boolean; number?: boolean } = { length: 8, upper: true, lower: true, symbol: true, number: true },
+    { length = 8, upper = true, lower = true, symbol = true, number = true }: { length?: number; upper?: boolean; lower?: boolean; symbol?: boolean; number?: boolean; } = { length: 8, upper: true, lower: true, symbol: true, number: true },
 ) => {
     return new RegExp(`^[${upper ? uppers : ''}${lower ? lowers : ''}${symbol ? symbols : ''}${number ? numbers : ''}]{${length}}$`);
 };
