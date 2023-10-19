@@ -27,7 +27,6 @@ const anyStart = 33;
 const anyEnd = 126;
 
 const generate = () => {
-
     const anyCodes: number[] = [];
     const upperCodes: number[] = [];
     const lowerCodes: number[] = [];
@@ -78,5 +77,4 @@ const generate = () => {
     console.log(lowerStrings.join(''));
     console.log(symbolStrings.join(''));
     console.log(numberStrings.join(''));
-
 };

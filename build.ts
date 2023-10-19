@@ -34,7 +34,8 @@ const banner = `
 
 await writeTextFile(
     'index.ts',
-    `${names.map((name) => `import ${name} from './${name}/mod.ts';`).join('\n')}
+    `${banner}
+${names.map((name) => `import ${name} from './${name}/mod.ts';`).join('\n')}
 
 export default {
     ${names.map((name) => `${name},`).join('\n\t')}
@@ -44,7 +45,8 @@ export default {
 
 await writeTextFile(
     'module/index.js',
-    `${names.map((name) => `import ${name} from './${name}/mod.js';`).join('\n')}
+    `${banner}
+${names.map((name) => `import ${name} from './${name}/mod.js';`).join('\n')}
 
 export default {
     ${names.map((name) => `${name},`).join('\n\t')}
@@ -60,13 +62,13 @@ await Promise.all(names.map((name) =>
         sourcemap: true,
         treeShaking: true,
         banner: { js: banner },
-        plugins: [ http ],
+        plugins: [http],
         format: 'esm',
         target: 'esnext',
         logLevel: 'verbose',
         // platform: 'browser',
         outdir: `module/${name}/`,
-        entryPoints: [ `${name}/mod.ts` ],
+        entryPoints: [`${name}/mod.ts`],
     })
 ));
 

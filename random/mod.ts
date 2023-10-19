@@ -1,4 +1,3 @@
-
 const symbol1Start = 33;
 const symbol1End = 47;
 
@@ -26,7 +25,7 @@ const anyEnd = 126;
 const translator = 2 ** 32;
 
 export const randomFloat = (): number => {
-    return window.crypto.getRandomValues(new Uint32Array(1))[ 0 ] / translator;
+    return window.crypto.getRandomValues(new Uint32Array(1))[0] / translator;
 };
 
 export const randomInteger = (min: number, max: number): number => {
@@ -50,11 +49,8 @@ export const randomAny = (): string => String.fromCharCode(randomInteger(anyStar
  * @returns {String}
  */
 export const random = (
-    { length = 8, upper = true, lower = true, symbol = true, number = true, }:
-        { length?: number, upper?: boolean, lower?: boolean, symbol?: boolean, number?: boolean, } =
-        { length: 8, upper: true, lower: true, symbol: true, number: true, }
+    { length = 8, upper = true, lower = true, symbol = true, number = true }: { length?: number; upper?: boolean; lower?: boolean; symbol?: boolean; number?: boolean } = { length: 8, upper: true, lower: true, symbol: true, number: true },
 ): string => {
-
     if (!length) throw new Error('length number required');
     if (typeof length !== 'number') throw new Error('length number required');
     if (typeof upper !== 'boolean') throw new Error('upper boolean required');
@@ -77,16 +73,17 @@ export const random = (
         } else if (number && integer >= numberStart && integer <= numberEnd) {
             result += String.fromCharCode(integer);
             length--;
-        } else if (symbol && (
-            integer >= symbol1Start && integer <= symbol1End ||
-            integer >= symbol2Start && integer <= symbol2End ||
-            integer >= symbol3Start && integer <= symbol3End ||
-            integer >= symbol4Start && integer <= symbol4End
-        )) {
+        } else if (
+            symbol && (
+                integer >= symbol1Start && integer <= symbol1End ||
+                integer >= symbol2Start && integer <= symbol2End ||
+                integer >= symbol3Start && integer <= symbol3End ||
+                integer >= symbol4Start && integer <= symbol4End
+            )
+        ) {
             result += String.fromCharCode(integer);
             length--;
         }
-
     }
 
     return result;
