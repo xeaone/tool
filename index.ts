@@ -1,6 +1,6 @@
 /*
     license: MIT
-    version: 3.3.1
+    version: 3.4.0
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -14,7 +14,7 @@ import identifier from './identifier/mod.ts';
 import jwt from './jwt/mod.ts';
 import password from './password/mod.ts';
 import post from './post/mod.ts';
-import random from './_/_mod.ts';
+import random from './random/mod.ts';
 import secret from './secret/mod.ts';
 import username from './username/mod.ts';
 

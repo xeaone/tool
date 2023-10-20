@@ -24,17 +24,6 @@ const anyEnd = 126;
 
 const translator = 2 ** 32;
 
-export const randomFloat = (): number => {
-    return window.crypto.getRandomValues(new Uint32Array(1))[ 0 ] / translator;
-};
-
-export const randomInteger = (min: number, max: number): number => {
-    if (typeof min !== 'number') throw new Error('min number required');
-    if (typeof max !== 'number') throw new Error('max number required');
-    if (min >= max) throw new Error('min must be less than max');
-    return Math.floor(randomFloat() * (max - min) + min);
-};
-
 export const randomNumber = (): string => String.fromCharCode(randomInteger(numberStart, numberEnd));
 
 export const randomUpper = (): string => String.fromCharCode(randomInteger(upperStart, upperEnd));
