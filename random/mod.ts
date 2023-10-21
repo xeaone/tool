@@ -168,3 +168,8 @@ export const randomString = ({
 
     return result.join('');
 };
+
+export default {
+    integer: randomInteger,
+    string: randomString,
+} as const;

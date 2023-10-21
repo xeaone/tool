@@ -1,7 +1,7 @@
 {
     "tasks": {
         "t": "deno test",
-        "b": "deno test && deno run -A build.ts && deno fmt"
+        "b": "deno run -A build.ts && deno fmt"
     },
     "lint": {
         "exclude": [

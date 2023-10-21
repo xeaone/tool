@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.5.1
+    version: 3.5.2
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -98,7 +98,12 @@ var randomString = ({
   }
   return result.join("");
 };
+var mod_default = {
+  integer: randomInteger,
+  string: randomString
+};
 export {
+  mod_default as default,
   randomInteger,
   randomString
 };
