@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.4.0
+    version: 3.5.1
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -68,11 +68,33 @@ var randomString = ({
     symbol ? symbols : "",
     number ? numbers : ""
   ].join("");
-  const start = 0;
-  const end = characters.length - 1;
+  const startCharacterIndex = 0;
+  const endCharacterIndex = characters.length - 1;
+  const positions = [];
   const result = [];
-  while (result.length < length) {
-    result.push(characters[randomInteger(start, end)]);
+  for (let index = 0; index < length; index++) {
+    positions.push(index);
+    result.push(characters[randomInteger(startCharacterIndex, endCharacterIndex)]);
+  }
+  if (upper) {
+    const positionInteger = randomInteger(0, positions.length - 1);
+    const [resultInteger] = positions.splice(positionInteger, 1);
+    result[resultInteger] = uppers[randomInteger(0, uppers.length - 1)];
+  }
+  if (lower) {
+    const positionInteger = randomInteger(0, positions.length - 1);
+    const [resultInteger] = positions.splice(positionInteger, 1);
+    result[resultInteger] = lowers[randomInteger(0, lowers.length - 1)];
+  }
+  if (symbol) {
+    const positionInteger = randomInteger(0, positions.length - 1);
+    const [resultInteger] = positions.splice(positionInteger, 1);
+    result[resultInteger] = symbols[randomInteger(0, symbols.length - 1)];
+  }
+  if (number) {
+    const positionInteger = randomInteger(0, positions.length - 1);
+    const [resultInteger] = positions.splice(positionInteger, 1);
+    result[resultInteger] = numbers[randomInteger(0, numbers.length - 1)];
   }
   return result.join("");
 };
