@@ -134,8 +134,6 @@ export const randomString = ({
     const startCharacterIndex = 0;
     const endCharacterIndex = characters.length - 1;
 
-    // const positions: number[] = Array.from({ length }, (_, position) => position);
-    // const result: string[] = Array.from({ length }, () => characters[randomInteger(startCharacterIndex, endCharacterIndex)]);
     const positions: number[] = [];
     const result: string[] = [];
 

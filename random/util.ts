@@ -1,6 +1,4 @@
-// const codes = Array.from({ length: 150 }, (_, index) => index);
-// const chars = Array.from({ length: 150 }, (_, i) => String.fromCharCode(i));
-// const translator = (0xffffffff + 1);
+// const characters = Array.from({ length: 130 }, (_, i) => String.fromCharCode(i));
 
 const symbol1Start = 33;
 const symbol1End = 47;
