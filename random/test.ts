@@ -1,10 +1,9 @@
-import { assertMatch } from 'https://deno.land/std@0.204.0/assert/mod.ts';
-import { randomString } from './mod.ts';
+import { assertLess, assertMatch } from 'https://deno.land/std@0.204.0/assert/mod.ts';
+import { randomInteger, randomString } from './mod.ts';
 
+const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\\\\\]^_`{|}~';
 const uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const lowers = 'abcdefghijklmnopqrstuvwxyz';
-// const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\]\\\\^_`{|}~';
-const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\\\\\]^_`{|}~';
 const numbers = '0123456789';
 
 const pattern = (
@@ -27,9 +26,9 @@ const pattern = (
         symbol: true,
         number: true,
     },
-) => {
-    return new RegExp(`^[${upper ? uppers : ''}${lower ? lowers : ''}${symbol ? symbols : ''}${number ? numbers : ''}]{${length}}$`);
-};
+) => new RegExp(
+    `^[${upper ? uppers : ''}${lower ? lowers : ''}${symbol ? symbols : ''}${number ? numbers : ''}]{${length}}$`,
+);
 
 Deno.test('random default', () => {
     const result = randomString();
@@ -44,7 +43,7 @@ Deno.test('random 10 default', () => {
     assertMatch(result, pattern(options));
 });
 
-Deno.test('random 10 any', () => {
+Deno.test('random 10 all', () => {
     const options = { length: 10, upper: true, lower: true, number: true, symbol: true };
     const result = randomString(options);
     console.log(result);
@@ -78,3 +77,76 @@ Deno.test('random 10 symbol', () => {
     console.log(result);
     assertMatch(result, pattern(options));
 });
+
+Deno.test('random 4 symbol number', () => {
+    const options = { length: 4, upper: false, lower: false, number: true, symbol: true };
+    const result = randomString(options);
+    console.log(result);
+    assertMatch(result, pattern(options));
+});
+
+Deno.test('collision 4 lower 100_000', () => {
+    const options = { length: 8, upper: false, lower: true, number: false, symbol: false };
+
+    const results: string[] = [];
+    const collision: string[] = [];
+
+    for (let index = 0; index < 100_000; index++) {
+        const random = randomString(options);
+        if (results.includes(random)) collision.push(random);
+        else results.push(random);
+    }
+
+    console.log('results: ', results.length);
+    console.log('collision: ', collision.length);
+    assertLess(collision.length, 1);
+});
+
+Deno.test('collision 8 all 100_000', () => {
+    const options = { length: 8, upper: true, lower: true, number: true, symbol: true };
+
+    const results: string[] = [];
+    const collision: string[] = [];
+
+    for (let index = 0; index < 100_000; index++) {
+        const random = randomString(options);
+        if (results.includes(random)) collision.push(random);
+        else results.push(random);
+    }
+
+    console.log('results: ', results.length);
+    console.log('collision: ', collision.length);
+    assertLess(collision.length, 1);
+});
+
+Deno.test('distribution', () => {
+    const data: Record<number, number> = {};
+
+    for (let i = 0; i < 2_000_000; ++i) {
+        const random = randomInteger(10, 30);
+        if (data[random] === undefined) {
+            data[random] = 1;
+        } else {
+            data[random] += 1;
+        }
+    }
+
+    console.log(data);
+});
+
+// Deno.test('collision all 1,000,000', () => {
+//     const options = { length: 8, upper: true, lower: true, number: true, symbol: true };
+
+//     const results: string[] = [];
+//     const collision: string[] = [];
+
+//     for (let index = 0; index < 1_000_000; index++) {
+// const random = randomString(options);
+// if (results.includes(random)) collision.push(random);
+// else results.push(random);
+//     }
+
+//     console.log('results: ', results.length);
+//     console.log('collision: ', collision.length);
+//     assertLess(collision.length, 1);
+// });

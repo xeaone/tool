@@ -50,9 +50,11 @@ const numbers = '0123456789';
 // };
 
 /**
+ * @link https://gist.github.com/sarciszewski/88a7ed143204d17c3e42
  * @link https://github.com/joepie91/node-random-number-csprng/blob/master/src/index.js
  * @link https://stackoverflow.com/questions/41437492/how-to-use-window-crypto-getrandomvalues-to-get-random-values-in-a-specific-rang
  * @link https://stackoverflow.com/questions/3956478/understanding-randomness
+ * @link https://en.wikipedia.org/wiki/Discrete_uniform_distribution
  * @param {Number} min
  * @param {Number} max
  * @returns {Number}
@@ -129,18 +131,42 @@ export const randomString = ({
         number ? numbers : '',
     ].join('');
 
-    const start = 0;
-    const end = characters.length - 1;
+    const startCharacterIndex = 0;
+    const endCharacterIndex = characters.length - 1;
+
+    // const positions: number[] = Array.from({ length }, (_, position) => position);
+    // const result: string[] = Array.from({ length }, () => characters[randomInteger(startCharacterIndex, endCharacterIndex)]);
+    const positions: number[] = [];
     const result: string[] = [];
 
-    while (result.length < length) {
-        result.push(characters[randomInteger(start, end)]);
+    for (let index = 0; index < length; index++) {
+        positions.push(index);
+        result.push(characters[randomInteger(startCharacterIndex, endCharacterIndex)]);
     }
 
-    // if (upper) result[randomInteger(0, length - 1)] = uppers[randomInteger(0, uppers.length - 1)];
-    // if (lower) result[randomInteger(0, length - 1)] = lowers[randomInteger(0, lowers.length - 1)];
-    // if (symbol) result[randomInteger(0, length - 1)] = symbols[randomInteger(0, symbols.length - 1)];
-    // if (number) result[randomInteger(0, length - 1)] = numbers[randomInteger(0, numbers.length - 1)];
+    if (upper) {
+        const positionInteger = randomInteger(0, positions.length - 1);
+        const [resultInteger] = positions.splice(positionInteger, 1);
+        result[resultInteger] = uppers[randomInteger(0, uppers.length - 1)];
+    }
+
+    if (lower) {
+        const positionInteger = randomInteger(0, positions.length - 1);
+        const [resultInteger] = positions.splice(positionInteger, 1);
+        result[resultInteger] = lowers[randomInteger(0, lowers.length - 1)];
+    }
+
+    if (symbol) {
+        const positionInteger = randomInteger(0, positions.length - 1);
+        const [resultInteger] = positions.splice(positionInteger, 1);
+        result[resultInteger] = symbols[randomInteger(0, symbols.length - 1)];
+    }
+
+    if (number) {
+        const positionInteger = randomInteger(0, positions.length - 1);
+        const [resultInteger] = positions.splice(positionInteger, 1);
+        result[resultInteger] = numbers[randomInteger(0, numbers.length - 1)];
+    }
 
     return result.join('');
 };
