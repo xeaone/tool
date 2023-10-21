@@ -47,7 +47,7 @@ export default {
 await writeTextFile(
     'module/index.js',
     `${banner}
-${names.map((name) => `export * from './${name}/mod.ts';`).join('\n')}
+${names.map((name) => `export * from './${name}/mod.js';`).join('\n')}
 ${names.map((name) => `import ${name} from './${name}/mod.js';`).join('\n')}
 
 export default {

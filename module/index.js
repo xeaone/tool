@@ -1,23 +1,23 @@
 
 /*
     license: MIT
-    version: 3.5.2
+    version: 3.5.3
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
 
-export * from './access/mod.ts';
-export * from './connect/mod.ts';
-export * from './decrypt/mod.ts';
-export * from './encrypt/mod.ts';
-export * from './hash/mod.ts';
-export * from './identifier/mod.ts';
-export * from './jwt/mod.ts';
-export * from './password/mod.ts';
-export * from './post/mod.ts';
-export * from './random/mod.ts';
-export * from './secret/mod.ts';
-export * from './username/mod.ts';
+export * from './access/mod.js';
+export * from './connect/mod.js';
+export * from './decrypt/mod.js';
+export * from './encrypt/mod.js';
+export * from './hash/mod.js';
+export * from './identifier/mod.js';
+export * from './jwt/mod.js';
+export * from './password/mod.js';
+export * from './post/mod.js';
+export * from './random/mod.js';
+export * from './secret/mod.js';
+export * from './username/mod.js';
 import access from './access/mod.js';
 import connect from './connect/mod.js';
 import decrypt from './decrypt/mod.js';
