@@ -1,13 +1,38 @@
 
 /*
     license: MIT
-    version: 3.5.3
+    version: 3.5.4
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
 
 
-// http-fetch:https://deno.land/std@0.180.0/encoding/base64.ts
+// http-fetch:https://deno.land/std@0.204.0/encoding/_util.ts
+var encoder = new TextEncoder();
+function getTypeName(value) {
+  const type = typeof value;
+  if (type !== "object") {
+    return type;
+  } else if (value === null) {
+    return "null";
+  } else {
+    return value?.constructor?.name ?? "object";
+  }
+}
+function validateBinaryLike(source) {
+  if (typeof source === "string") {
+    return encoder.encode(source);
+  } else if (source instanceof Uint8Array) {
+    return source;
+  } else if (source instanceof ArrayBuffer) {
+    return new Uint8Array(source);
+  }
+  throw new TypeError(
+    `The input must be a Uint8Array, a string, or an ArrayBuffer. Received a value of the type ${getTypeName(source)}.`
+  );
+}
+
+// http-fetch:https://deno.land/std@0.204.0/encoding/base64.ts
 var base64abc = [
   "A",
   "B",
@@ -74,8 +99,9 @@ var base64abc = [
   "+",
   "/"
 ];
-function encode(data) {
-  const uint8 = typeof data === "string" ? new TextEncoder().encode(data) : data instanceof Uint8Array ? data : new Uint8Array(data);
+var decode = decodeBase64;
+function encodeBase64(data) {
+  const uint8 = validateBinaryLike(data);
   let result = "", i;
   const l = uint8.length;
   for (i = 2; i < l; i += 3) {
@@ -97,7 +123,7 @@ function encode(data) {
   }
   return result;
 }
-function decode(b64) {
+function decodeBase64(b64) {
   const binString = atob(b64);
   const size = binString.length;
   const bytes = new Uint8Array(size);
@@ -107,20 +133,21 @@ function decode(b64) {
   return bytes;
 }
 
-// http-fetch:https://deno.land/std@0.180.0/encoding/base64url.ts
+// http-fetch:https://deno.land/std@0.204.0/encoding/base64url.ts
 function convertBase64ToBase64url(b64) {
-  return b64.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return b64.endsWith("=") ? b64.endsWith("==") ? b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -2) : b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -1) : b64.replace(/\+/g, "-").replace(/\//g, "_");
 }
-function encode2(data) {
-  return convertBase64ToBase64url(encode(data));
+var encode = encodeBase64Url;
+function encodeBase64Url(data) {
+  return convertBase64ToBase64url(encodeBase64(data));
 }
 
 // jwt/mod.ts
-var encoder = new TextEncoder();
+var encoder2 = new TextEncoder();
 async function mod_default(header, payload, secret) {
-  const encodedHeader = encode2(JSON.stringify(header));
-  const encodedPayload = encode2(JSON.stringify(payload));
-  const data = encoder.encode(`${encodedHeader}.${encodedPayload}`);
+  const encodedHeader = encode(JSON.stringify(header));
+  const encodedPayload = encode(JSON.stringify(payload));
+  const data = encoder2.encode(`${encodedHeader}.${encodedPayload}`);
   const cleanedKey = secret.replace(
     /^\n?-----BEGIN PRIVATE KEY-----\n?|\n?-----END PRIVATE KEY-----\n?$/g,
     ""
@@ -138,7 +165,7 @@ async function mod_default(header, payload, secret) {
     key,
     data
   );
-  const encodedSignature = encode2(signature);
+  const encodedSignature = encode(signature);
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 }
 export {

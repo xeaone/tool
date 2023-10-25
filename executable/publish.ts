@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 
-import { resolve } from 'https://deno.land/std@0.201.0/path/resolve.ts';
-import { blue, red } from 'https://deno.land/std@0.201.0/fmt/colors.ts';
-import * as semver from 'https://deno.land/std@0.201.0/semver/mod.ts';
-import { parse } from 'https://deno.land/std@0.201.0/flags/mod.ts';
+import { resolve } from 'https://deno.land/std@0.204.0/path/resolve.ts';
+import { blue, red } from 'https://deno.land/std@0.204.0/fmt/colors.ts';
+import * as semver from 'https://deno.land/std@0.204.0/semver/mod.ts';
+import { parse } from 'https://deno.land/std@0.204.0/flags/mod.ts';
 import versionImport from '../version.ts';
 
 /**
