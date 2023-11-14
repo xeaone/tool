@@ -99,6 +99,7 @@ export const execute = async <T extends string[][]>(options: Options, statement:
     const account = options.account;
     const user = options.user;
     const organization = options.organization;
+    const timeout = options.timeout ?? 60;
 
     const base = `https://${locator}.${region}.${cloud}.snowflakecomputing.com`;
 
@@ -120,7 +121,7 @@ export const execute = async <T extends string[][]>(options: Options, statement:
 
     const body = {
         statement,
-        timeout: options.timeout ?? 60,
+        timeout,
         schema: options.schema,
         role: options.role,
         warehouse: options.warehouse,

@@ -222,10 +222,10 @@ var Google = class {
         throw new Error("credentials required");
       }
     }
-    const result = await response.json();
-    if (result.error) {
-      throw new Error(JSON.stringify(result.error, null, "	"));
+    if (response.status !== 200) {
+      throw new Error(`${response.status} ${response.statusText} ${await response.text()}`);
     }
+    const result = await response.json();
     this.#token = result.access_token;
     this.#expires = Date.now() + result.expires_in * 1e3;
   }
