@@ -31,6 +31,8 @@ type Credential =
 
 type Options = {
     project?: string;
+    timeout?: number;
+    attempts?: number;
     // credential?: Credential;
     serviceAccountCredentials?: ServiceAccountCredentials;
     applicationDefaultCredentials?: ApplicationDefaultCredentials;
@@ -40,23 +42,28 @@ class Google {
     #token?: string;
     #expires?: number;
     #project?: string;
+    #attempts = 5;
+    #timeout = 1000;
     #serviceAccountCredentials?: ServiceAccountCredentials;
     #applicationDefaultCredentials?: ApplicationDefaultCredentials;
 
     constructor(options?: Options) {
         this.#project = options?.project;
+        this.#timeout = options?.timeout ?? this.#timeout;
+        this.#attempts = options?.attempts ?? this.#attempts;
         this.#serviceAccountCredentials = options?.serviceAccountCredentials;
         this.#applicationDefaultCredentials = options
             ?.applicationDefaultCredentials;
     }
 
-    async #auth() {
+    async #auth(attempts: number) {
         if (this.#expires && this.#expires >= Date.now()) return;
 
         let response;
         if (this.#applicationDefaultCredentials) {
             response = await fetch('https://oauth2.googleapis.com/token', {
                 method: 'POST',
+                signal: AbortSignal.timeout(this.#timeout * attempts),
                 body: new URLSearchParams(this.#applicationDefaultCredentials),
             });
         } else if (this.#serviceAccountCredentials) {
@@ -66,16 +73,11 @@ class Google {
             const exp = iat + (30 * 60);
             const aud = 'https://oauth2.googleapis.com/token';
             const scope = 'https://www.googleapis.com/auth/datastore';
-            const assertion = await jwt({ typ: 'JWT', alg: 'RS256' }, {
-                exp,
-                iat,
-                iss,
-                aud,
-                scope,
-            }, private_key);
+            const assertion = await jwt({ typ: 'JWT', alg: 'RS256' }, { exp, iat, iss, aud, scope }, private_key);
             const grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
             response = await fetch('https://oauth2.googleapis.com/token', {
                 method: 'POST',
+                signal: AbortSignal.timeout(this.#timeout * attempts),
                 body: new URLSearchParams({ assertion, grant_type }),
             });
         } else {
@@ -84,11 +86,17 @@ class Google {
                     'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
                     {
                         method: 'GET',
+                        signal: AbortSignal.timeout(this.#timeout * attempts),
                         headers: { 'Metadata-Flavor': 'Google' },
                     },
                 );
-            } catch {
-                throw new Error('credentials required');
+            } catch (error) {
+                console.log('here');
+                if (error?.name !== 'TimeoutError') {
+                    throw new Error('credentials required');
+                } else {
+                    throw error;
+                }
             }
         }
 
@@ -165,39 +173,79 @@ class Google {
         }
     }
 
+    /**
+     * @description
+     * @param {String} data
+     * @returns {Google}
+     */
     project(data: string): this {
         this.#project = data;
         return this;
     }
 
-    async fetch(input: string | URL | Request, init?: RequestInit) {
-        if (!this.project) {
-            const method = 'GET';
-            const headers = new Headers({
-                'Metadata-Flavor': 'Google',
-            });
+    /**
+     * @description Sets the max request time. Defaults to 1000ms.
+     * @param {Number} timeout The milliseconds for request a timeout.
+     * @return {Google}
+     */
+    timeout(timeout: number): this {
+        this.#timeout = timeout;
+        return this;
+    }
 
-            const projectResponse = await fetch(
-                'http://metadata.google.internal/computeMetadata/v1/project/project-id',
-                { method, headers },
-            );
+    /**
+     * @description Sets the max retry atttempts after request timeout. Defaults to 5.
+     * @param {Number} attempts The amount of attempts for timeout retries.
+     * @return {Google}
+     */
+    attempts(attempts: number): this {
+        this.#attempts = attempts;
+        return this;
+    }
 
-            this.#project = await projectResponse.text();
+    async fetch(input: string | URL | Request, init?: RequestInit, attempts?: number): Promise<any> {
+        attempts = attempts || 1;
+        try {
+            if (!this.project) {
+                const projectResponse = await fetch(
+                    'http://metadata.google.internal/computeMetadata/v1/project/project-id',
+                    {
+                        method: 'GET',
+                        headers: { 'Metadata-Flavor': 'Google' },
+                        signal: AbortSignal.timeout(this.#timeout * attempts),
+                    },
+                );
+
+                this.#project = await projectResponse.text();
+            }
+
+            if (!this.#project) throw new Error('project required');
+
+            await this.#auth(attempts);
+
+            init = init ?? {};
+            init.signal = AbortSignal.timeout(this.#timeout * attempts);
+
+            const request = new Request(input, init);
+
+            if (this.#token) request.headers.set('Authorization', `Bearer ${this.#token}`);
+
+            const response = await fetch(request);
+
+            // if (response.status !== 200) {
+            //     throw new Error(`${response.status} ${response.statusText} \n${await response.text()}\n`);
+            // }
+
+            return response;
+        } catch (error) {
+            console.error(error);
+
+            if (error?.name === 'TimeoutError' && attempts <= this.#attempts) {
+                return this.fetch(input, init, attempts + 1);
+            } else {
+                throw error;
+            }
         }
-
-        if (!this.#project) throw new Error('project required');
-
-        await this.#auth();
-
-        const request = new Request(input, init);
-
-        if (this.#token) {
-            request.headers.set('Authorization', `Bearer ${this.#token}`);
-        }
-
-        const response = await fetch(request);
-
-        return response;
     }
 }
 
