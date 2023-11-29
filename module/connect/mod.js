@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.5.5
+    version: 3.6.1
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -334,7 +334,6 @@ var Google = class {
       const response = await fetch(request);
       return response;
     } catch (error) {
-      console.error(error);
       if (error?.name === "TimeoutError" && attempts <= this.#attempts) {
         return this.fetch(input, init, attempts + 1);
       } else {

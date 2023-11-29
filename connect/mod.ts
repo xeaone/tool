@@ -52,8 +52,7 @@ class Google {
         this.#timeout = options?.timeout ?? this.#timeout;
         this.#attempts = options?.attempts ?? this.#attempts;
         this.#serviceAccountCredentials = options?.serviceAccountCredentials;
-        this.#applicationDefaultCredentials = options
-            ?.applicationDefaultCredentials;
+        this.#applicationDefaultCredentials = options?.applicationDefaultCredentials;
     }
 
     async #auth(attempts: number) {
@@ -232,14 +231,8 @@ class Google {
 
             const response = await fetch(request);
 
-            // if (response.status !== 200) {
-            //     throw new Error(`${response.status} ${response.statusText} \n${await response.text()}\n`);
-            // }
-
             return response;
         } catch (error) {
-            console.error(error);
-
             if (error?.name === 'TimeoutError' && attempts <= this.#attempts) {
                 return this.fetch(input, init, attempts + 1);
             } else {
