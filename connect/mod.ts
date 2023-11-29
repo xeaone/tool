@@ -42,7 +42,7 @@ class Google {
     #token?: string;
     #expires?: number;
     #project?: string;
-    #attempts = 5;
+    #attempts = 10;
     #timeout = 1000;
     #serviceAccountCredentials?: ServiceAccountCredentials;
     #applicationDefaultCredentials?: ApplicationDefaultCredentials;
@@ -76,8 +76,8 @@ class Google {
             const grant_type = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
             response = await fetch('https://oauth2.googleapis.com/token', {
                 method: 'POST',
-                signal: AbortSignal.timeout(this.#timeout * attempts),
                 body: new URLSearchParams({ assertion, grant_type }),
+                signal: AbortSignal.timeout(this.#timeout * attempts),
             });
         } else {
             try {
@@ -85,8 +85,8 @@ class Google {
                     'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
                     {
                         method: 'GET',
-                        signal: AbortSignal.timeout(this.#timeout * attempts),
                         headers: { 'Metadata-Flavor': 'Google' },
+                        signal: AbortSignal.timeout(this.#timeout * attempts),
                     },
                 );
             } catch (error) {
@@ -202,7 +202,7 @@ class Google {
         return this;
     }
 
-    async fetch(input: string | URL | Request, init?: RequestInit, attempts?: number): Promise<any> {
+    async fetch(input: string | URL | Request, init?: RequestInit, attempts?: number): Promise<Response> {
         attempts = attempts || 1;
         try {
             if (!this.project) {
@@ -233,10 +233,12 @@ class Google {
 
             return response;
         } catch (error) {
-            if (error?.name === 'TimeoutError' && attempts <= this.#attempts) {
+            if (error?.name === 'TimeoutError' && attempts < this.#attempts) {
                 return this.fetch(input, init, attempts + 1);
+            } else if (error?.name === 'TimeoutError') {
+                return new Response(undefined, { status: 408, headers: { connection: 'close' } });
             } else {
-                throw error;
+                throw new Error(error.message, { cause: error });
             }
         }
     }
