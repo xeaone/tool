@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.6.1
+    version: 3.6.2
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -174,7 +174,7 @@ var Google = class {
   #token;
   #expires;
   #project;
-  #attempts = 5;
+  #attempts = 10;
   #timeout = 1e3;
   #serviceAccountCredentials;
   #applicationDefaultCredentials;
@@ -206,8 +206,8 @@ var Google = class {
       const grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer";
       response = await fetch("https://oauth2.googleapis.com/token", {
         method: "POST",
-        signal: AbortSignal.timeout(this.#timeout * attempts),
-        body: new URLSearchParams({ assertion, grant_type })
+        body: new URLSearchParams({ assertion, grant_type }),
+        signal: AbortSignal.timeout(this.#timeout * attempts)
       });
     } else {
       try {
@@ -215,8 +215,8 @@ var Google = class {
           "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token",
           {
             method: "GET",
-            signal: AbortSignal.timeout(this.#timeout * attempts),
-            headers: { "Metadata-Flavor": "Google" }
+            headers: { "Metadata-Flavor": "Google" },
+            signal: AbortSignal.timeout(this.#timeout * attempts)
           }
         );
       } catch (error) {
@@ -334,10 +334,12 @@ var Google = class {
       const response = await fetch(request);
       return response;
     } catch (error) {
-      if (error?.name === "TimeoutError" && attempts <= this.#attempts) {
+      if (error?.name === "TimeoutError" && attempts < this.#attempts) {
         return this.fetch(input, init, attempts + 1);
+      } else if (error?.name === "TimeoutError") {
+        return new Response(void 0, { status: 408, headers: { connection: "close" } });
       } else {
-        throw error;
+        throw new Error(error.message, { cause: error });
       }
     }
   }
