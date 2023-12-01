@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.6.2
+    version: 3.6.3
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -220,11 +220,10 @@ var Google = class {
           }
         );
       } catch (error) {
-        console.log("here");
         if (error?.name !== "TimeoutError") {
           throw new Error("credentials required");
         } else {
-          throw error;
+          throw new Error(error.message, { cause: error });
         }
       }
     }
@@ -273,9 +272,7 @@ var Google = class {
         grant_type: "refresh_token"
       };
     } else if (credential.type === "authorized_user") {
-      this.applicationDefault(
-        credential
-      );
+      this.applicationDefault(credential);
     } else if (credential.type === "service_account") {
       this.serviceAccount(credential);
     } else {
