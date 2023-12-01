@@ -90,11 +90,10 @@ class Google {
                     },
                 );
             } catch (error) {
-                console.log('here');
                 if (error?.name !== 'TimeoutError') {
                     throw new Error('credentials required');
                 } else {
-                    throw error;
+                    throw new Error(error.message, { cause: error });
                 }
             }
         }
@@ -162,9 +161,7 @@ class Google {
                 grant_type: 'refresh_token',
             };
         } else if (credential.type === 'authorized_user') {
-            this.applicationDefault(
-                credential as ApplicationDefaultCredentials,
-            );
+            this.applicationDefault(credential as ApplicationDefaultCredentials);
         } else if (credential.type === 'service_account') {
             this.serviceAccount(credential as ServiceAccountCredentials);
         } else {
