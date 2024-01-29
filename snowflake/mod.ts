@@ -1,4 +1,4 @@
-import * as jose from 'https://deno.land/x/jose@v5.0.1/index.ts';
+import * as jose from 'https://deno.land/x/jose@v5.2.0/index.ts';
 
 /**
  * @link https://docs.snowflake.com/en/developer-guide/sql-api/authenticating

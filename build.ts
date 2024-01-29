@@ -1,10 +1,10 @@
 // import { build, emptyDir } from 'https://deno.land/x/dnt@0.22.0/mod.ts';
 // import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
 
-import { build, stop } from 'https://deno.land/x/esbuild@v0.19.0/mod.js';
-import http from 'https://deno.land/x/esbuild_plugin_http_fetch@v1.0.2/index.js';
+import { build, stop } from 'https://deno.land/x/esbuild@v0.20.0/mod.js';
+import http from 'https://deno.land/x/esbuild_plugin_http_fetch@v1.0.3/index.js';
 
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 const { writeTextFile } = Deno;
 

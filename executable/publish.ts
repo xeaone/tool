@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 
-import { resolve } from 'https://deno.land/std@0.204.0/path/resolve.ts';
-import { blue, red } from 'https://deno.land/std@0.204.0/fmt/colors.ts';
-import * as semver from 'https://deno.land/std@0.204.0/semver/mod.ts';
-import { parse } from 'https://deno.land/std@0.204.0/flags/mod.ts';
+import { resolve } from 'https://deno.land/std@0.213.0/path/resolve.ts';
+import { blue, red } from 'https://deno.land/std@0.213.0/fmt/colors.ts';
+import * as semver from 'https://deno.land/std@0.213.0/semver/mod.ts';
+import { parseArgs } from 'https://deno.land/std@0.213.0/cli/parse_args.ts';
 import versionImport from '../version.ts';
 
 /**
@@ -48,7 +48,7 @@ const helpText = `
 `;
 
 export const publish = async function () {
-    const options = parse(Deno.args, {
+    const options = parseArgs(Deno.args, {
         boolean: [
             'git',
             'tag',

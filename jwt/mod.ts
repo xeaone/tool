@@ -1,5 +1,5 @@
-import * as base64url from 'https://deno.land/std@0.204.0/encoding/base64url.ts';
-import * as base64 from 'https://deno.land/std@0.204.0/encoding/base64.ts';
+import { encodeBase64Url } from 'https://deno.land/std@0.213.0/encoding/base64url.ts';
+import { decodeBase64 } from 'https://deno.land/std@0.213.0/encoding/base64.ts';
 
 export type Header = {
     alg: 'RS256';
@@ -21,15 +21,15 @@ export default async function (
     payload: Payload,
     secret: string,
 ): Promise<string> {
-    const encodedHeader = base64url.encode(JSON.stringify(header));
-    const encodedPayload = base64url.encode(JSON.stringify(payload));
+    const encodedHeader = encodeBase64Url(JSON.stringify(header));
+    const encodedPayload = encodeBase64Url(JSON.stringify(payload));
     const data = encoder.encode(`${encodedHeader}.${encodedPayload}`);
 
     const cleanedKey = secret.replace(
         /^\n?-----BEGIN PRIVATE KEY-----\n?|\n?-----END PRIVATE KEY-----\n?$/g,
         '',
     );
-    const decodedKey = base64.decode(cleanedKey).buffer;
+    const decodedKey = decodeBase64(cleanedKey).buffer;
     const key = await crypto.subtle.importKey(
         'pkcs8',
         decodedKey,
@@ -43,7 +43,7 @@ export default async function (
         key,
         data,
     );
-    const encodedSignature = base64url.encode(signature);
+    const encodedSignature = encodeBase64Url(signature);
 
     return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 }

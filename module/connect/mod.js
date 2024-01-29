@@ -7,7 +7,7 @@
 */
 
 
-// http-fetch:https://deno.land/std@0.204.0/encoding/_util.ts
+// http-fetch:https://deno.land/std@0.213.0/encoding/_util.ts
 var encoder = new TextEncoder();
 function getTypeName(value) {
   const type = typeof value;
@@ -32,7 +32,7 @@ function validateBinaryLike(source) {
   );
 }
 
-// http-fetch:https://deno.land/std@0.204.0/encoding/base64.ts
+// http-fetch:https://deno.land/std@0.213.0/encoding/base64.ts
 var base64abc = [
   "A",
   "B",
@@ -99,7 +99,6 @@ var base64abc = [
   "+",
   "/"
 ];
-var decode = decodeBase64;
 function encodeBase64(data) {
   const uint8 = validateBinaryLike(data);
   let result = "", i;
@@ -133,11 +132,10 @@ function decodeBase64(b64) {
   return bytes;
 }
 
-// http-fetch:https://deno.land/std@0.204.0/encoding/base64url.ts
+// http-fetch:https://deno.land/std@0.213.0/encoding/base64url.ts
 function convertBase64ToBase64url(b64) {
   return b64.endsWith("=") ? b64.endsWith("==") ? b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -2) : b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -1) : b64.replace(/\+/g, "-").replace(/\//g, "_");
 }
-var encode = encodeBase64Url;
 function encodeBase64Url(data) {
   return convertBase64ToBase64url(encodeBase64(data));
 }
@@ -145,14 +143,14 @@ function encodeBase64Url(data) {
 // jwt/mod.ts
 var encoder2 = new TextEncoder();
 async function mod_default(header, payload, secret) {
-  const encodedHeader = encode(JSON.stringify(header));
-  const encodedPayload = encode(JSON.stringify(payload));
+  const encodedHeader = encodeBase64Url(JSON.stringify(header));
+  const encodedPayload = encodeBase64Url(JSON.stringify(payload));
   const data = encoder2.encode(`${encodedHeader}.${encodedPayload}`);
   const cleanedKey = secret.replace(
     /^\n?-----BEGIN PRIVATE KEY-----\n?|\n?-----END PRIVATE KEY-----\n?$/g,
     ""
   );
-  const decodedKey = decode(cleanedKey).buffer;
+  const decodedKey = decodeBase64(cleanedKey).buffer;
   const key = await crypto.subtle.importKey(
     "pkcs8",
     decodedKey,
@@ -165,7 +163,7 @@ async function mod_default(header, payload, secret) {
     key,
     data
   );
-  const encodedSignature = encode(signature);
+  const encodedSignature = encodeBase64Url(signature);
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 }
 
