@@ -16,7 +16,7 @@ export type Payload = {
 
 const encoder = new TextEncoder();
 
-export default async function (
+export default async function jwt(
     header: Header,
     payload: Payload,
     secret: string,

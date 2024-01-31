@@ -1,6 +1,3 @@
-// import { build, emptyDir } from 'https://deno.land/x/dnt@0.22.0/mod.ts';
-// import { ts } from 'https://deno.land/x/ts_morph@14.0.0/mod.ts';
-
 import { build, stop } from 'https://deno.land/x/esbuild@v0.20.0/mod.js';
 import http from 'https://deno.land/x/esbuild_plugin_http_fetch@v1.0.3/index.js';
 
@@ -75,55 +72,3 @@ await Promise.all(names.map((name) =>
 ));
 
 stop();
-
-// await emptyDir('./node');
-
-// await Promise.all([
-//     'access',
-//     'connect',
-//     'decrypt',
-//     'encrypt',
-//     'hash',
-//     'identifier',
-//     'jwt',
-//     'password',
-//     // 'post',
-//     'username',
-//     'secret',
-// ].map(name => {
-//     return build({
-//         package: { version: pkg.version, name: `${pkg.name}/${name}` },
-//         compilerOptions: { target: 'Latest' },
-//         entryPoints: [`./${name}/mod.ts`],
-//         outDir: `./node/${name}`,
-//         shims: {},
-//         test: false,
-//         typeCheck: false,
-//         declaration: false,
-//         scriptModule: false,
-//         skipSourceOutput: true,
-//     });
-// }));
-
-// await build({
-//     package: { version, name: 'post' },
-//     compilerOptions: { target: 'Latest' },
-//     entryPoints: [ './post/mod.ts' ],
-//     outDir: './temp/post',
-//     shims: {},
-//     test: false,
-//     typeCheck: false,
-//     declaration: false,
-//     scriptModule: false,
-//     skipSourceOutput: true,
-// });
-
-// Deno.copyFileSync('./temp/post/esm/mod.js', './post/mod.js');
-// Deno.removeSync('./temp', { recursive: true });
-
-// Deno.writeTextFileSync('./post/mod.js',
-//     ts.transpile(
-//         header + Deno.readTextFileSync('./post/mod.ts'),
-//         { target: ts.ScriptTarget.Latest }
-//     )
-// );

@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.6.3
+    version: 3.6.5
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -36,25 +36,25 @@ var Post = class {
       );
       return {};
     }
-    data = "";
     const decoder = new TextDecoder();
     const reader = response.body.getReader();
-    let result = await reader.read();
-    while (!result.done) {
-      data += decoder.decode(result.value, { stream: true });
+    let result = "";
+    let stream = await reader.read();
+    while (!stream.done) {
+      result += decoder.decode(stream.value, { stream: true });
       await this.duringPost?.(
         data,
         new URL(response.url),
         response.status
       );
-      result = await reader.read();
+      stream = await reader.read();
     }
     try {
-      data = JSON.parse(data);
+      result = JSON.parse(result);
     } catch {
     }
-    await this.afterPost?.(data, new URL(response.url), response.status);
-    return data;
+    await this.afterPost?.(result, new URL(response.url), response.status);
+    return result;
   }
 };
 export {

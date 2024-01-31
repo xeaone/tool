@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.6.3
+    version: 3.6.5
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -142,7 +142,7 @@ function encodeBase64Url(data) {
 
 // jwt/mod.ts
 var encoder2 = new TextEncoder();
-async function mod_default(header, payload, secret) {
+async function jwt(header, payload, secret) {
   const encodedHeader = encodeBase64Url(JSON.stringify(header));
   const encodedPayload = encodeBase64Url(JSON.stringify(payload));
   const data = encoder2.encode(`${encodedHeader}.${encodedPayload}`);
@@ -167,6 +167,6 @@ async function mod_default(header, payload, secret) {
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 }
 export {
-  mod_default as default
+  jwt as default
 };
 //# sourceMappingURL=mod.js.map

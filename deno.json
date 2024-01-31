@@ -1,16 +1,14 @@
 {
+    "exclude": [
+        ".github",
+        ".vscode",
+        "module"
+    ],
     "tasks": {
         "t": "deno test",
-        "b": "deno run -A build.ts && deno fmt"
+        "b": "deno run -A build.ts && deno fmt ."
     },
     "lint": {
-        "exclude": [
-            "_",
-            ".github",
-            ".vscode",
-            "module",
-            "post"
-        ]
     },
     "fmt": {
         "useTabs": false,
@@ -18,12 +16,6 @@
         "indentWidth": 4,
         "semiColons": true,
         "singleQuote": true,
-        "proseWrap": "preserve",
-        "exclude": [
-            "_",
-            ".github",
-            ".vscode",
-            "module"
-        ]
+        "proseWrap": "preserve"
     }
 }

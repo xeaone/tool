@@ -1,6 +1,10 @@
-type BeforePost = (data: any, url: URL) => void;
-type DuringPost = (data: any, url: URL, code: number) => void;
-type AfterPost = (data: any, url: URL, code: number) => void;
+type Key = string | number | symbol;
+type Data = BodyInit | Array<unknown> | Record<Key, unknown>;
+type Result = Promise<string | Record<Key, unknown>>;
+
+type BeforePost = <T extends Data>(data: T, url: URL) => Promise<void> | void;
+type DuringPost = <T extends Data>(data: T, url: URL, code: number) => Promise<void> | void;
+type AfterPost = <T extends Data>(data: T, url: URL, code: number) => Promise<void> | void;
 
 type PostOptions = {
     beforePost?: BeforePost;
@@ -19,7 +23,7 @@ export default class Post {
         this.afterPost = options?.afterPost;
     }
 
-    async method(path: string, data: any): Promise<string | Record<any, any>> {
+    async method(path: string, data: Data): Result {
         const url = new URL(path, globalThis.location.origin);
 
         await this.beforePost?.(data, url);
@@ -30,7 +34,7 @@ export default class Post {
 
         const response = await globalThis.fetch(url.href, {
             method: 'POST',
-            body: data,
+            body: data as BodyInit,
         });
 
         if (!response.body) {
@@ -42,28 +46,30 @@ export default class Post {
             return {};
         }
 
-        data = '';
         const decoder = new TextDecoder();
         const reader = response.body.getReader();
 
-        let result = await reader.read();
+        let result = '';
+        let stream = await reader.read();
 
-        while (!result.done) {
-            data += decoder.decode(result.value, { stream: true });
+        while (!stream.done) {
+            result += decoder.decode(stream.value, { stream: true });
+
             await this.duringPost?.(
                 data,
                 new URL(response.url),
                 response.status,
             );
-            result = await reader.read();
+
+            stream = await reader.read();
         }
 
         try {
-            data = JSON.parse(data);
+            result = JSON.parse(result);
         } catch { /**/ }
 
-        await this.afterPost?.(data, new URL(response.url), response.status);
+        await this.afterPost?.(result, new URL(response.url), response.status);
 
-        return data;
+        return result;
     }
 }

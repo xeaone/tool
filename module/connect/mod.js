@@ -1,7 +1,7 @@
 
 /*
     license: MIT
-    version: 3.6.3
+    version: 3.6.5
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -142,7 +142,7 @@ function encodeBase64Url(data) {
 
 // jwt/mod.ts
 var encoder2 = new TextEncoder();
-async function mod_default(header, payload, secret) {
+async function jwt(header, payload, secret) {
   const encodedHeader = encodeBase64Url(JSON.stringify(header));
   const encodedPayload = encodeBase64Url(JSON.stringify(payload));
   const data = encoder2.encode(`${encodedHeader}.${encodedPayload}`);
@@ -200,7 +200,7 @@ var Google = class {
       const exp = iat + 30 * 60;
       const aud = "https://oauth2.googleapis.com/token";
       const scope = "https://www.googleapis.com/auth/datastore";
-      const assertion = await mod_default({ typ: "JWT", alg: "RS256" }, { exp, iat, iss, aud, scope }, private_key);
+      const assertion = await jwt({ typ: "JWT", alg: "RS256" }, { exp, iat, iss, aud, scope }, private_key);
       const grant_type = "urn:ietf:params:oauth:grant-type:jwt-bearer";
       response = await fetch("https://oauth2.googleapis.com/token", {
         method: "POST",
@@ -339,10 +339,10 @@ var Google = class {
     }
   }
 };
-var mod_default2 = {
+var mod_default = {
   Google
 };
 export {
-  mod_default2 as default
+  mod_default as default
 };
 //# sourceMappingURL=mod.js.map

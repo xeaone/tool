@@ -1,28 +1,28 @@
 {
-	"private": false,
-	"name": "@xeaone/tool",
-	"version": "3.6.4",
-	"description": "",
-	"type": "module",
-	"main": "./module/index.js",
-	"module": "./module/index.js",
-	"exports": {
-		".": {
-			"default": "./module/index.js"
-		}
-	},
-	"scripts": {
-		"t": "deno tasks t",
-		"b": "deno tasks b"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/xeaone/tool.git"
-	},
-	"author": "Alexander Elias",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/xeaone/tool/issues"
-	},
-	"homepage": "https://github.com/xeaone/tool#readme"
+    "private": false,
+    "name": "@xeaone/tool",
+    "version": "3.6.5",
+    "description": "",
+    "type": "module",
+    "main": "./module/index.js",
+    "module": "./module/index.js",
+    "exports": {
+        ".": {
+            "default": "./module/index.js"
+        }
+    },
+    "scripts": {
+        "t": "deno tasks t",
+        "b": "deno tasks b"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xeaone/tool.git"
+    },
+    "author": "Alexander Elias",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/xeaone/tool/issues"
+    },
+    "homepage": "https://github.com/xeaone/tool#readme"
 }
