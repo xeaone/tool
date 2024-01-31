@@ -1,7 +1,7 @@
 import { build, stop } from 'https://deno.land/x/esbuild@v0.20.0/mod.js';
 import http from 'https://deno.land/x/esbuild_plugin_http_fetch@v1.0.3/index.js';
 
-import pkg from './package.json' with { type: 'json' };
+const pkg = JSON.parse(await Deno.readTextFile('./package.json'));
 
 const { writeTextFile } = Deno;
 
