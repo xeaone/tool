@@ -1,14 +1,14 @@
 {
-    "exclude": [
-        ".github",
-        ".vscode",
-        "module"
-    ],
     "tasks": {
         "t": "deno test",
         "b": "deno run -A build.ts && deno fmt ."
     },
     "lint": {
+        "exclude": [
+            ".github",
+            ".vscode",
+            "module"
+        ]
     },
     "fmt": {
         "useTabs": false,
