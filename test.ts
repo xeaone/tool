@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.213.0/assert/mod.ts';
+import { assertEquals } from './deps.ts';
 
 import encrypt from './encrypt/mod.ts';
 import decrypt from './decrypt/mod.ts';

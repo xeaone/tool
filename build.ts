@@ -1,9 +1,14 @@
 import { build, stop } from 'https://deno.land/x/esbuild@v0.20.0/mod.js';
 import http from 'https://deno.land/x/esbuild_plugin_http_fetch@v1.0.3/index.js';
+import version from './version.ts';
 
-const pkg = JSON.parse(await Deno.readTextFile('./package.json'));
+import p from './package.json' with { type: 'json' };
+import d from './deno.json' with { type: 'json' };
 
 const { writeTextFile } = Deno;
+
+const author = 'Alexander Elias';
+const license = 'MIT';
 
 const names = [
     'access',
@@ -22,12 +27,18 @@ const names = [
 
 const banner = `
 /*
-    license: ${pkg.license}
-    version: ${pkg.version}
-    author: ${pkg.author}
+    license: ${license}
+    version: ${version}
+    author: ${author}
     repository: https://github.com/xeaone/tool
 */
 `;
+
+p.version = version;
+d.version = version;
+
+await writeTextFile('package.json', JSON.stringify(p, null, '    '));
+await writeTextFile('deno.json', JSON.stringify(d, null, '    '));
 
 await writeTextFile(
     'index.ts',

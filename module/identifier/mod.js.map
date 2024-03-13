@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../../identifier/mod.ts"],
-  "sourcesContent": ["export default function () {\n    return crypto.randomUUID();\n}\n"],
-  "mappings": ";;;;;;;;;;AAAe,SAAR,cAAoB;AACvB,SAAO,OAAO,WAAW;AAC7B;",
+  "sourcesContent": ["export default function (): string {\n    return crypto.randomUUID();\n}\n"],
+  "mappings": ";;;;;;;;;;AAAe,SAAR,cAA4B;AAC/B,SAAO,OAAO,WAAW;AAC7B;",
   "names": []
 }

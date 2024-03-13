@@ -1,4 +1,4 @@
-import { assertLess, assertMatch } from 'https://deno.land/std@0.204.0/assert/mod.ts';
+import { assertLess, assertMatch } from '../deps.ts';
 import { randomInteger, randomString } from './mod.ts';
 
 const symbols = '!"#$%&\'()*+,-./:;<=>?@\\[\\\\\\]^_`{|}~';

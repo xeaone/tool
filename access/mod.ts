@@ -24,12 +24,12 @@ class Access {
         this.#resources = options?.resources ?? this.#resources;
     }
 
-    actions(actions: Array<string>) {
+    actions(actions: Array<string>): this {
         this.#actions = actions;
         return this;
     }
 
-    resources(resources: Array<string>) {
+    resources(resources: Array<string>): this {
         this.#resources = resources;
         return this;
     }
@@ -84,7 +84,7 @@ class Access {
     compare<P extends Permission>(
         credentialPermissions: Array<P>,
         payloadPermissions: Array<P>,
-    ) {
+    ): boolean {
         if (payloadPermissions instanceof Array === false) {
             return false;
         }

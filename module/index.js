@@ -1,6 +1,7 @@
+
 /*
     license: MIT
-    version: 3.6.7
+    version: 3.6.8
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
@@ -32,15 +33,15 @@ import username from './username/mod.js';
 
 export default {
     access,
-    connect,
-    decrypt,
-    encrypt,
-    hash,
-    identifier,
-    jwt,
-    password,
-    post,
-    random,
-    secret,
-    username,
-};
+	connect,
+	decrypt,
+	encrypt,
+	hash,
+	identifier,
+	jwt,
+	password,
+	post,
+	random,
+	secret,
+	username,
+}

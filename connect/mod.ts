@@ -55,7 +55,7 @@ class Google {
         this.#applicationDefaultCredentials = options?.applicationDefaultCredentials;
     }
 
-    async #auth(attempts: number) {
+    async #auth(attempts: number): Promise<void> {
         if (this.#expires && this.#expires >= Date.now()) return;
 
         let response;
@@ -110,7 +110,7 @@ class Google {
 
     applicationDefault(
         applicationDefaultCredentials: ApplicationDefaultCredentials,
-    ) {
+    ): this {
         this.#applicationDefaultCredentials = {
             ...applicationDefaultCredentials,
             grant_type: 'refresh_token',
@@ -118,7 +118,7 @@ class Google {
         return this;
     }
 
-    serviceAccount(serviceAccountCredentials: ServiceAccountCredentials) {
+    serviceAccount(serviceAccountCredentials: ServiceAccountCredentials): this {
         this.#serviceAccountCredentials = { ...serviceAccountCredentials };
         return this;
     }
@@ -131,7 +131,7 @@ class Google {
      *      - Linux/Mac: $HOME/.config/gcloud/application_default_credentials.json
      * @param credential
      */
-    credential(credential: Credential) {
+    credential(credential: Credential): vodi {
         // const command = await new Deno.Command('gcloud', {
         //     args: ['auth', 'application-default', 'print-access-token'],
         //     stderr: 'inherit',

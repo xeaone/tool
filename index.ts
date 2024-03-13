@@ -1,6 +1,6 @@
 /*
     license: MIT
-    version: 3.6.7
+    version: 3.6.8
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
