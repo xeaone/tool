@@ -1,6 +1,6 @@
 {
     "name": "@xeaone/tool",
-    "version": "3.6.8",
+    "version": "3.6.9",
     "exports": "./index.ts",
     "tasks": {
         "t": "deno test",

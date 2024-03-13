@@ -1,13 +1,24 @@
 
 /*
     license: MIT
-    version: 3.6.8
+    version: 3.6.9
     author: Alexander Elias
     repository: https://github.com/xeaone/tool
 */
 
 
-// http-fetch:https://deno.land/std@0.213.0/encoding/_util.ts
+// http-fetch:https://deno.land/std@0.219.1/fmt/colors.ts
+var { Deno } = globalThis;
+var noColor = typeof Deno?.noColor === "boolean" ? Deno.noColor : false;
+var ANSI_PATTERN = new RegExp(
+  [
+    "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+    "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TXZcf-nq-uy=><~]))"
+  ].join("|"),
+  "g"
+);
+
+// http-fetch:https://deno.land/std@0.219.1/encoding/_util.ts
 var encoder = new TextEncoder();
 function getTypeName(value) {
   const type = typeof value;
@@ -32,7 +43,7 @@ function validateBinaryLike(source) {
   );
 }
 
-// http-fetch:https://deno.land/std@0.213.0/encoding/base64.ts
+// http-fetch:https://deno.land/std@0.219.1/encoding/base64.ts
 var base64abc = [
   "A",
   "B",
@@ -132,7 +143,7 @@ function decodeBase64(b64) {
   return bytes;
 }
 
-// http-fetch:https://deno.land/std@0.213.0/encoding/base64url.ts
+// http-fetch:https://deno.land/std@0.219.1/encoding/base64url.ts
 function convertBase64ToBase64url(b64) {
   return b64.endsWith("=") ? b64.endsWith("==") ? b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -2) : b64.replace(/\+/g, "-").replace(/\//g, "_").slice(0, -1) : b64.replace(/\+/g, "-").replace(/\//g, "_");
 }
