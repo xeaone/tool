@@ -1,4 +1,3 @@
-
 /*
     license: MIT
     version: 3.6.9
@@ -33,15 +32,15 @@ import username from './username/mod.js';
 
 export default {
     access,
-	connect,
-	decrypt,
-	encrypt,
-	hash,
-	identifier,
-	jwt,
-	password,
-	post,
-	random,
-	secret,
-	username,
-}
+    connect,
+    decrypt,
+    encrypt,
+    hash,
+    identifier,
+    jwt,
+    password,
+    post,
+    random,
+    secret,
+    username,
+};

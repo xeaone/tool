@@ -1,4 +1,3 @@
-
 /*
     license: MIT
     version: 3.6.9
@@ -6,12 +5,9 @@
     repository: https://github.com/xeaone/tool
 */
 
-
 // identifier/mod.ts
 function mod_default() {
-  return crypto.randomUUID();
+    return crypto.randomUUID();
 }
-export {
-  mod_default as default
-};
+export { mod_default as default };
 //# sourceMappingURL=mod.js.map

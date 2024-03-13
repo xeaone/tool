@@ -7,10 +7,13 @@
         "b": "deno run -A build.ts && deno fmt ."
     },
     "exclude": [
-        "_",
-        "module"
+        "_"
     ],
-    "lint": {},
+    "lint": {
+        "exclude": [
+            "module"
+        ]
+    },
     "fmt": {
         "useTabs": false,
         "lineWidth": 800,
