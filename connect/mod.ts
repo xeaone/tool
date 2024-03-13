@@ -131,7 +131,7 @@ class Google {
      *      - Linux/Mac: $HOME/.config/gcloud/application_default_credentials.json
      * @param credential
      */
-    credential(credential: Credential): vodi {
+    credential(credential: Credential): void {
         // const command = await new Deno.Command('gcloud', {
         //     args: ['auth', 'application-default', 'print-access-token'],
         //     stderr: 'inherit',
